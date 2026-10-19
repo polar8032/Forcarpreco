@@ -315,19 +315,15 @@
         const manifestURL = URL.createObjectURL(blobManifest);
         document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
 
-        // 2. REGISTAR SERVICE WORKER PARA PERMITIR INSTALAÇÃO PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
-                    self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-                `;
-                const blobSW = new Blob([swCode], { type: 'text/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blobSW))
-                    .catch(err => console.log('SW ERRO:', err));
-            });
-        }
+        // Registrar o Service Worker a partir do ficheiro real sw.js
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(() => console.log('PWA pronta e instalável!'))
+            .catch(err => console.log('Erro ao registar SW:', err));
+    });
+}
+        
 
         // 3. VUE APP
         const { createApp } = Vue;
