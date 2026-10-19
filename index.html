@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Forçar Preço</title>
+
+    <!-- Meta-tags para PWA / Web App / iOS / Android -->
+    <meta name="theme-color" content="#f8fafc">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Forçar Preço">
     
+    <!-- Link para o Manifest PWA (Injetado via Data URL) -->
+    <link rel="manifest" id="manifest-placeholder">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -26,11 +36,11 @@
         .backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         input:focus { outline: none; }
         
-        /* Ocultar scrollbar na calculadora */
+        /* Ocultar scrollbar */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Efeitos de toque naturais estilo Pixel / Android 17 */
+        /* Efeitos de toque estilo Pixel / Android 17 */
         button, input {
             transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
         }
@@ -281,20 +291,56 @@
         </main>
     </div>
 
+    <!-- Script PWA e Vue JS -->
     <script>
+        // 1. INJETAR MANIFEST PWA AUTOMATICAMENTE
+        const manifestData = {
+            "name": "Forçar Preço",
+            "short_name": "Forçar Preço",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#f8fafc",
+            "theme_color": "#f8fafc",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%234f46e5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='220'>FP</text></svg>",
+                    "sizes": "512x512",
+                    "type": "image/svg+xml",
+                    "purpose": "any maskable"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifestData);
+        const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blobManifest);
+        document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+
+        // 2. REGISTAR SERVICE WORKER PARA PERMITIR INSTALAÇÃO PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+                    self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+                `;
+                const blobSW = new Blob([swCode], { type: 'text/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blobSW))
+                    .catch(err => console.log('SW ERRO:', err));
+            });
+        }
+
+        // 3. VUE APP
         const { createApp } = Vue;
 
         createApp({
             data() {
                 return {
-                    // Estado da App Principal
                     tab: 'unit',
                     mostrarAjuda: false,
                     baseInput: '',
                     discInput: '',
                     targetInput: '',
 
-                    // Estado da Calculadora
                     mostrarCalculadora: false,
                     mostrarHistorico: false,
                     calcDisplay: '0',
@@ -340,7 +386,6 @@
                      else { alert("Link copiado!"); }
                 },
 
-                // --- MÉTODOS DA CALCULADORA ---
                 calcNumero(n) {
                     if (this.calcDisplay === '0' || this.calcReiniciarProximo) {
                         this.calcDisplay = n;
