@@ -105,17 +105,6 @@ overscroll-behavior-y: none; overflow: hidden;
                 </button>
             </div>
 
-            <!-- Aviso -->
-            <div class="mb-5 bg-amber-50/80 border-l-4 border-amber-400 p-4 rounded-2xl animate-fade-in shadow-sm backdrop-blur-sm">
-                <div class="flex items-center gap-2 text-amber-800 font-extrabold uppercase text-xs mb-1.5 tracking-wider">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" /></svg>
-                    Atenção
-                </div>
-                <p class="text-xs text-amber-900/90 leading-relaxed font-medium">
-                    {{ textoAtencao }}
-                </p>
-            </div>
-
             <!-- Card Principal de Inputs -->
             <div class="p-6 rounded-[32px] shadow-xl mb-5 relative overflow-hidden flex-none transition-all bg-gray-900 border-b-8 border-indigo-500 text-green-400 font-mono">
                 <div class="relative border-b border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
@@ -485,11 +474,7 @@ overscroll-behavior-y: none; overflow: hidden;
                 }
             },
             computed: {
-                textoAtencao() {
-                    return this.tab === 'unit' 
-                        ? "Calcular apenas neste modo em produtos unitários quando está em vigor promoção diferente da que estava exposta para o cliente."
-                        : "Calcular apenas neste modo em produtos ao peso quando está em vigor promoção diferente da que estava exposta para o cliente ou por algum motivo o preço passar mal."
-                },
+                
                 resultadoFinal() {
                     const final = parseFloat(this.baseInput);
                     const discEuro = parseFloat(this.discInput);
