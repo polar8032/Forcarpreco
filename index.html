@@ -67,8 +67,14 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
+                    <!-- Botão Calculadora -->
                     <button @click="mostrarCalculadora = true" class="bg-indigo-50 text-indigo-600 w-11 h-11 rounded-2xl flex items-center justify-center font-bold hover:bg-indigo-100 shadow-sm transition-all" title="Abrir Calculadora">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="3"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+                    </button>
+
+                    <!-- Botão Tabaco (T) -->
+                    <button @click="mostrarTabaco = true" class="bg-indigo-50 text-indigo-600 w-11 h-11 rounded-2xl flex items-center justify-center font-extrabold font-mono text-lg hover:bg-indigo-100 shadow-sm transition-all" title="Notas de Tabaco">
+                        T
                     </button>
 
                     <button @click="partilhar" class="bg-indigo-50 text-indigo-600 px-3.5 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 hover:bg-indigo-100 shadow-sm transition-all">
@@ -288,6 +294,80 @@
                 </div>
             </div>
 
+            <!-- Modal Tabaco -->
+            <div v-if="mostrarTabaco" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-fade-in">
+                <div class="absolute inset-0 bg-black/55 backdrop-blur-md transition-opacity" @click="mostrarTabaco = false"></div>
+                
+                <div class="relative bg-gray-950 w-full max-w-lg rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl animate-slide-up border border-gray-800 flex flex-col max-h-[92dvh]">
+                    
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-extrabold text-white">Seleção de Tabaco</h3>
+                        <button @click="mostrarTabaco = false" class="p-2 bg-gray-900 rounded-full hover:bg-gray-800 text-gray-400 hover:text-white transition-colors">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Conteúdo Dividido em 2 Lados -->
+                    <div class="grid grid-cols-2 gap-4 flex-1 overflow-hidden min-h-[320px]">
+                        
+                        <!-- Lado Esquerdo: Marcas e Gamas -->
+                        <div class="bg-gray-900 rounded-2xl p-3 flex flex-col overflow-y-auto border border-gray-800/80 scrollbar-hide">
+                            <div v-if="!marcaSelecionada">
+                                <p class="text-xs font-bold uppercase text-gray-400 mb-3 px-1">Marcas</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button v-for="marca in marcasTabaco" :key="marca.nome" @click="marcaSelecionada = marca" class="bg-gray-950 hover:bg-gray-800 p-3 rounded-xl text-white text-xs font-bold flex flex-col items-center justify-center gap-1 border border-gray-800 transition-all">
+                                        <span class="text-lg">🚬</span>
+                                        <span>{{ marca.nome }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-else class="flex flex-col h-full animate-fade-in">
+                                <div class="flex items-center justify-between mb-3">
+                                    <button @click="marcaSelecionada = null" class="text-xs text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1">
+                                        ← Voltar
+                                    </button>
+                                    <span class="text-xs font-bold text-white">{{ marcaSelecionada.nome }}</span>
+                                </div>
+                                <p class="text-[10px] font-bold uppercase text-gray-400 mb-2">Selecionar Gama</p>
+                                <div class="space-y-2 overflow-y-auto flex-1 pr-1">
+                                    <button v-for="gama in marcaSelecionada.gamas" :key="gama" @click="adicionarTabaco(marcaSelecionada.nome, gama)" class="w-full text-left bg-gray-950 hover:bg-indigo-600/20 hover:border-indigo-500/50 p-2.5 rounded-xl text-white text-xs font-semibold border border-gray-800 transition-all flex justify-between items-center">
+                                        <span>{{ gama }}</span>
+                                        <span class="text-indigo-400 text-sm font-bold">+</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lado Direito: Notas / Selecionados -->
+                        <div class="bg-gray-900 rounded-2xl p-3 flex flex-col overflow-y-auto border border-gray-800/80 scrollbar-hide">
+                            <div class="flex justify-between items-center mb-3 px-1">
+                                <span class="text-xs font-bold uppercase text-gray-400">Selecionados</span>
+                                <button v-if="tabacosSelecionados.length > 0" @click="tabacosSelecionados = []" class="text-[10px] text-red-400 hover:text-red-300 font-bold">Limpar</button>
+                            </div>
+                            <div class="flex-1 overflow-y-auto space-y-2 pr-1">
+                                <div v-if="tabacosSelecionados.length === 0" class="text-center text-gray-600 text-xs py-12 italic">
+                                    Nenhum item selecionado.
+                                </div>
+                                <div v-for="(item, index) in tabacosSelecionados" :key="index" class="bg-gray-950 p-2.5 rounded-xl border border-gray-800 flex justify-between items-center text-xs text-white">
+                                    <div>
+                                        <span class="font-bold text-indigo-400">{{ item.marca }}</span>
+                                        <p class="text-gray-300 text-[11px]">{{ item.gama }}</p>
+                                    </div>
+                                    <button @click="removerTabaco(index)" class="text-gray-500 hover:text-red-400 p-1 font-bold">
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button @click="mostrarTabaco = false" class="w-full mt-4 bg-gray-900 hover:bg-black text-white py-3 rounded-2xl font-bold text-sm shadow-lg transition-all border border-gray-800">
+                        Fechar Janela
+                    </button>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -315,15 +395,14 @@
         const manifestURL = URL.createObjectURL(blobManifest);
         document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
 
-        // Registrar o Service Worker a partir do ficheiro real sw.js
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log('PWA pronta e instalável!'))
-            .catch(err => console.log('Erro ao registar SW:', err));
-    });
-}
-        
+        // Registrar o Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('PWA pronta e instalável!'))
+                    .catch(err => console.log('Erro ao registar SW:', err));
+            });
+        }
 
         // 3. VUE APP
         const { createApp } = Vue;
@@ -344,7 +423,63 @@ if ('serviceWorker' in navigator) {
                     calcValorAnterior: null,
                     calcOperador: null,
                     calcReiniciarProximo: false,
-                    calcHistorico: []
+                    calcHistorico: [],
+
+                                       // Propriedades Tabaco
+                    mostrarTabaco: false,
+                    marcaSelecionada: null,
+                    marcasTabaco: [
+                        { 
+                            nome: 'Marlboro', 
+                            gamas: ['Red Caixa', 'Red Soft', 'Red 100s', 'Gold Caixa', 'Gold Soft', 'Gold 100s', 'Silver Caixa', 'Silver Soft', 'Touch', 'Crafted Caixa Red', 'Crafted Caixa Gold'] 
+                        },
+                        { 
+                            nome: 'Chesterfield', 
+                            gamas: ['Original Caixa', 'Original Soft', 'Original 100s', 'Blue Caixa', 'Blue Soft', 'Silver', 'Crafted'] 
+                        },
+                        { 
+                            nome: 'L&M', 
+                            gamas: ['Red Caixa', 'Red Soft', 'Red 100s', 'Blue Caixa', 'Blue Soft', 'Forward'] 
+                        },
+                        { 
+                            nome: 'Camel', 
+                            gamas: ['Filters Caixa', 'Filters Soft', 'Filters 100s', 'Blue', 'Yellow', 'Compact'] 
+                        },
+                        { 
+                            nome: 'Winston', 
+                            gamas: ['Red Caixa', 'Red Soft', 'Red 100s', 'Blue Caixa', 'Blue Soft', 'Silver'] 
+                        },
+                        { 
+                            nome: 'Lucky Strike', 
+                            gamas: ['Original Caixa', 'Original Soft', 'Original 100s', 'Amber', 'Click', 'Red'] 
+                        },
+                        { 
+                            nome: 'Rothmans', 
+                            gamas: ['King Size Caixa', 'King Size Soft', 'Blue', 'Silver', '100s'] 
+                        },
+                        { 
+                            nome: 'West', 
+                            gamas: ['Red Caixa', 'Red Soft', 'Blue', 'Silver', '100s'] 
+                        },
+                        { 
+                            nome: 'Terea (Aquecido)', 
+                            gamas: ['Russet', 'Teak', 'Sienna', 'Amber', 'Yellow', 'Bronze', 'Turquoise', 'Blue', 'Green', 'Azzurro', 'Ruby Fuse'] 
+                        },
+                        { 
+                            nome: 'Heets (Aquecido)', 
+                            gamas: ['Bronze', 'Amber', 'Yellow', 'Turquoise', 'Sienna', 'Green', 'Blue'] 
+                        },
+                        { 
+                            nome: 'Fiit / Fitz (Aquecido)', 
+                            gamas: ['Regular', 'Regular Sky', 'Crisp', 'Change', 'Marine'] 
+                        },
+                        { 
+                            nome: 'Neo (Aquecido)', 
+                            gamas: ['Terracotta Tobacco', 'Balanced Tobacco', 'Dark Tobacco', 'Arctic Click', 'Green Click', 'Purple Click'] 
+                        }
+                    ],
+                    tabacosSelecionados: []
+ 
                 }
             },
             computed: {
@@ -373,6 +508,14 @@ if ('serviceWorker' in navigator) {
                 }
             },
             methods: {
+                // Funções Tabaco
+                adicionarTabaco(marca, gama) {
+                    this.tabacosSelecionados.push({ marca, gama });
+                },
+                removerTabaco(index) {
+                    this.tabacosSelecionados.splice(index, 1);
+                },
+
                 mudarTab(novaTab) { this.tab = novaTab; this.limparTudo(); },
                 limparTudo() { this.baseInput = ''; this.discInput = ''; this.targetInput = ''; },
                 formatarInput(campo) { this[campo] = this[campo].replace(',', '.'); },
