@@ -6,7 +6,7 @@
     <title>Forçar Preço</title>
 
     <!-- Meta-tags para PWA / Web App / iOS / Android -->
-    <meta name="theme-color" content="#f8fafc">
+    <meta name="theme-color" content="#111827">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,12 +21,13 @@
 
     <style>
         /* Ajustar suporte para alturas em browsers antigos */
-html, body { 
-    height: 100%; min-height: -webkit-fill-available; margin: 0; padding: 0; 
-    background-color: #eef2f6; 
-    font-family: 'Inter', sans-serif; 
-    -webkit-tap-highlight-color: transparent; 
-    overscroll-behavior-y: none; overflow: hidden; 
+html, body {
+height: 100%; min-height: -webkit-fill-available; margin: 0; padding: 0;
+background-color: #000000; /* Alterado de #eef2f6 para preto para criar contraste na
+barra de navegação */
+font-family: 'Inter', sans-serif;
+-webkit-tap-highlight-color: transparent;
+overscroll-behavior-y: none; overflow: hidden;
 }
 
         .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -65,7 +66,6 @@ html, body {
                     </div>
                     <div>
                         <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight leading-none">Forçar Preço</h1>
-                        <p class="text-xs font-medium text-gray-500 mt-0.5">Assistente de Caixa</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -377,12 +377,12 @@ html, body {
     <script>
         // 1. INJETAR MANIFEST PWA AUTOMATICAMENTE
         const manifestData = {
-            "name": "Forçar Preço",
-            "short_name": "Forçar Preço",
-            "start_url": ".",
-            "display": "standalone",
-            "background_color": "#f8fafc",
-            "theme_color": "#f8fafc",
+        "name": "Forçar Preço",
+        "short_name": "Forçar Preço",
+        "start_url": ".",
+        "display": "standalone",
+        "background_color": "#000000", 
+        "theme_color": "#111827",
             "icons": [
                 {
                     "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%234f46e5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='220'>FP</text></svg>",
