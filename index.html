@@ -30,26 +30,41 @@ font-family: 'Inter', sans-serif;
 overscroll-behavior-y: none; overflow: hidden;
 }
 
-        .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-slide-up { animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .pt-safe { padding-top: max(1.25rem, env(safe-area-inset-top)) !important; }
-        .pb-safe { padding-bottom: max(1.5rem, env(safe-area-inset-bottom)) !important; }
-        .backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        input:focus { outline: none; }
-        
-        /* Ocultar scrollbar */
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Efeitos de toque estilo iOS / Android (Física de mola) */
+button {
+    /* O regresso à forma normal: suave e com ligeira elasticidade */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15), 
+                background-color 0.3s ease, 
+                box-shadow 0.3s ease;
+}
+button:active {
+    /* O momento do toque: rápido e imersivo */
+    transform: scale(0.92);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+input {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
 
-        /* Efeitos de toque estilo Pixel / Android 17 */
-        button, input {
-            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        button:active {
-            transform: scale(0.96);
-        }
+/* Transições Vue.js para Janelas (Modais) */
+.modal-enter-active, .modal-leave-active {
+    /* O fundo escuro desvanece suavemente */
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.modal-enter-from, .modal-leave-to {
+    opacity: 0;
+}
+
+/* O conteúdo da janela desliza com desaceleração (gravidade) */
+.modal-enter-active .modal-content, .modal-leave-active .modal-content {
+    transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1.05);
+}
+.modal-enter-from .modal-content, .modal-leave-to .modal-content {
+    transform: translateY(100%);
+}
+    .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
     </style>
 </head>
 <body>
@@ -157,9 +172,10 @@ overscroll-behavior-y: none; overflow: hidden;
             </div>
 
             <!-- Modal Ajuda -->
-            <div v-if="mostrarAjuda" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-fade-in">
-                <div class="absolute inset-0 bg-black/55 backdrop-blur-md transition-opacity" @click="mostrarAjuda = false"></div>
-                <div class="relative bg-white w-full max-w-md rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl animate-slide-up max-h-[90vh] overflow-y-auto border border-gray-100">
+                    <transition name="modal">
+    <div v-if="mostrarAjuda" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+        <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="mostrarAjuda = false"></div>
+        <div class="modal-content relative bg-white w-full max-w-md rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-gray-100">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-2xl font-extrabold text-gray-900">Ajuda</h3>
                         <button @click="mostrarAjuda = false" class="p-2.5 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
@@ -197,13 +213,13 @@ overscroll-behavior-y: none; overflow: hidden;
                     </button>
                 </div>
             </div>
-
+            </transition>
             <!-- Modal Calculadora -->
-            <div v-if="mostrarCalculadora" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-fade-in">
-                <div class="absolute inset-0 bg-black/55 backdrop-blur-md transition-opacity" @click="mostrarCalculadora = false"></div>
-                
-                <div class="relative bg-gray-950 w-full max-w-sm rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl animate-slide-up border border-gray-800 flex flex-col max-h-[92dvh]">
-                    
+                    <transition name="modal">
+    <div v-if="mostrarCalculadora" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+        <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="mostrarCalculadora = false"></div>
+        <div class="modal-content relative bg-gray-950 w-full max-w-sm rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl border border-gray-800 flex flex-col max-h-[92dvh]">
+          
                     <!-- Visor Calculadora -->
                     <div class="bg-gray-900 rounded-2xl p-4 mb-4 text-right border border-gray-800/80 flex-none shadow-inner">
                         <div class="text-xs text-gray-400 h-6 font-medium overflow-hidden text-ellipsis whitespace-nowrap">
@@ -284,13 +300,12 @@ overscroll-behavior-y: none; overflow: hidden;
                     </button>
                 </div>
             </div>
-
+            </transition>
             <!-- Modal Tabaco -->
-            <div v-if="mostrarTabaco" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-fade-in">
-                <div class="absolute inset-0 bg-black/55 backdrop-blur-md transition-opacity" @click="mostrarTabaco = false"></div>
-                
-                <div class="relative bg-gray-950 w-full max-w-lg rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl animate-slide-up border border-gray-800 flex flex-col max-h-[92dvh]">
-                    
+                    <transition name="modal">
+    <div v-if="mostrarTabaco" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+        <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="mostrarTabaco = false"></div>
+        <div class="modal-content relative bg-gray-950 w-full max-w-lg rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl border border-gray-800 flex flex-col max-h-[92dvh]">   
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-extrabold text-white">Seleção de Tabaco</h3>
                         <button @click="mostrarTabaco = false" class="p-2 bg-gray-900 rounded-full hover:bg-gray-800 text-gray-400 hover:text-white transition-colors">
@@ -306,10 +321,12 @@ overscroll-behavior-y: none; overflow: hidden;
                             <div v-if="!marcaSelecionada">
                                 <p class="text-xs font-bold uppercase text-gray-400 mb-3 px-1">Marcas</p>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <button v-for="marca in marcasTabaco" :key="marca.nome" @click="marcaSelecionada = marca" class="bg-gray-950 hover:bg-gray-800 p-3 rounded-xl text-white text-xs font-bold flex flex-col items-center justify-center gap-1 border border-gray-800 transition-all">
-                                        <span class="text-lg">🚬</span>
-                                        <span>{{ marca.nome }}</span>
-                                    </button>
+                                    <button v-for="marca in marcasTabaco" :key="marca.nome" @click="marcaSelecionada = marca" class="h-24 bg-gray-950 hover:bg-gray-800 p-2 rounded-xl text-white text-xs font-bold flex flex-col items-center justify-center gap-1.5 border border-gray-800 transition-all w-full">
+    <span class="text-xl flex-shrink-0">🚬</span>
+    <span class="w-full text-center break-words whitespace-normal leading-tight">{{ marca.nome }}</span>
+</button>
+
+
                                 </div>
                             </div>
                             <div v-else class="flex flex-col h-full animate-fade-in">
@@ -321,10 +338,12 @@ overscroll-behavior-y: none; overflow: hidden;
                                 </div>
                                 <p class="text-[10px] font-bold uppercase text-gray-400 mb-2">Selecionar Gama</p>
                                 <div class="space-y-2 overflow-y-auto flex-1 pr-1">
-                                    <button v-for="gama in marcaSelecionada.gamas" :key="gama" @click="adicionarTabaco(marcaSelecionada.nome, gama)" class="w-full text-left bg-gray-950 hover:bg-indigo-600/20 hover:border-indigo-500/50 p-2.5 rounded-xl text-white text-xs font-semibold border border-gray-800 transition-all flex justify-between items-center">
-                                        <span>{{ gama }}</span>
-                                        <span class="text-indigo-400 text-sm font-bold">+</span>
-                                    </button>
+                                    <button v-for="gama in marcaSelecionada.gamas" :key="gama" @click="adicionarTabaco(marcaSelecionada.nome, gama)" class="w-full min-h-[3.25rem] text-left bg-gray-950 hover:bg-indigo-600/20 hover:border-indigo-500/50 p-2.5 rounded-xl text-white text-xs font-semibold border border-gray-800 transition-all flex justify-between items-center gap-2">
+    <span class="flex-1 break-words whitespace-normal leading-tight">{{ gama }}</span>
+    <span class="text-indigo-400 text-lg font-bold flex-shrink-0">+</span>
+</button>
+
+
                                 </div>
                             </div>
                         </div>
@@ -339,15 +358,16 @@ overscroll-behavior-y: none; overflow: hidden;
                                 <div v-if="tabacosSelecionados.length === 0" class="text-center text-gray-600 text-xs py-12 italic">
                                     Nenhum item selecionado.
                                 </div>
-                                <div v-for="(item, index) in tabacosSelecionados" :key="index" class="bg-gray-950 p-2.5 rounded-xl border border-gray-800 flex justify-between items-center text-xs text-white">
-                                    <div>
-                                        <span class="font-bold text-indigo-400">{{ item.marca }}</span>
-                                        <p class="text-gray-300 text-[11px]">{{ item.gama }}</p>
-                                    </div>
-                                    <button @click="removerTabaco(index)" class="text-gray-500 hover:text-red-400 p-1 font-bold">
-                                        ✕
-                                    </button>
-                                </div>
+                                <div v-for="(item, index) in tabacosSelecionados" :key="index" class="bg-gray-950 p-2.5 min-h-[3.5rem] rounded-xl border border-gray-800 flex justify-between items-center text-xs text-white gap-2">
+    <div class="flex-1 min-w-0">
+        <span class="font-bold text-indigo-400 block break-words whitespace-normal leading-tight">{{ item.marca }}</span>
+        <p class="text-gray-300 text-[11px] break-words whitespace-normal leading-tight mt-0.5">{{ item.gama }}</p>
+    </div>
+    <button @click="removerTabaco(index)" class="text-gray-500 hover:text-red-400 p-1.5 font-bold flex-shrink-0">
+        ✕
+    </button>
+</div>
+
                             </div>
                         </div>
 
@@ -358,7 +378,7 @@ overscroll-behavior-y: none; overflow: hidden;
                     </button>
                 </div>
             </div>
-
+           </transition>
         </main>
     </div>
 
@@ -425,7 +445,7 @@ overscroll-behavior-y: none; overflow: hidden;
                             gamas: ['Red Caixa', 'Red Soft', 'Red 100s', 'Gold Caixa', 'Gold Soft', 'Gold 100s', 'Silver Caixa', 'Silver Soft', 'Touch', 'Crafted Caixa Red', 'Crafted Caixa Gold'] 
                         },
                         { 
-                            nome: 'Chesterfield', 
+                            nome: 'Chester', 
                             gamas: ['Original Caixa', 'Original Soft', 'Original 100s', 'Blue Caixa', 'Blue Soft', 'Silver', 'Crafted'] 
                         },
                         { 
@@ -461,7 +481,7 @@ overscroll-behavior-y: none; overflow: hidden;
                             gamas: ['Bronze', 'Amber', 'Yellow', 'Turquoise', 'Sienna', 'Green', 'Blue'] 
                         },
                         { 
-                            nome: 'Fiit / Fitz (Aquecido)', 
+                            nome: 'Fitz (Aquecido)', 
                             gamas: ['Regular', 'Regular Sky', 'Crisp', 'Change', 'Marine'] 
                         },
                         { 
