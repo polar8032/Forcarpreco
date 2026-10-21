@@ -14,9 +14,9 @@
     
     <!-- Link para o Manifest PWA (Injetado via Data URL) -->
     <link rel="manifest" id="manifest-placeholder">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+        
+       <script src="https://cdn.tailwindcss.com"></script>
+       <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -35,7 +35,7 @@
             }
         }
     </script>
-
+ 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
@@ -95,7 +95,7 @@
 </head>
 <body>
 
-    <div id="app" :class="{ 'dark': modoEscuro }" class="w-full h-[100dvh] relative flex flex-col overflow-hidden max-w-md mx-auto shadow-2xl">
+    <div id="app" class="w-full h-[100dvh] relative flex flex-col overflow-hidden max-w-md mx-auto shadow-2xl">
         
         <main class="flex-1 overflow-y-auto p-5 bg-[#f8fafc] dark:bg-gray-950 text-gray-900 dark:text-gray-100 w-full pb-24 pt-safe relative scrollbar-hide transition-colors duration-300">
 
@@ -597,20 +597,35 @@
                 }
             },
             mounted() {
-                const escuroGuardado = localStorage.getItem('fp_modoEscuro');
-                if (escuroGuardado !== null) {
-                    this.modoEscuro = escuroGuardado === 'true';
-                }
-                const corGuardada = localStorage.getItem('fp_cor');
-                if (corGuardada && this.paletasCores[corGuardada]) {
-                    this.mudarCor(corGuardada);
-                }
-            },
+    const escuroGuardado = localStorage.getItem('fp_modoEscuro');
+    if (escuroGuardado !== null) {
+        this.modoEscuro = escuroGuardado === 'true';
+    }
+    
+    // Adicionar a injeção direta no HTML no arranque da app
+    if (this.modoEscuro) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+
+    const corGuardada = localStorage.getItem('fp_cor');
+    if (corGuardada && this.paletasCores[corGuardada]) {
+        this.mudarCor(corGuardada);
+    }
+},
             methods: {
                 alternarModoEscuro() {
-                    this.modoEscuro = !this.modoEscuro;
-                    localStorage.setItem('fp_modoEscuro', this.modoEscuro);
-                },
+        this.modoEscuro = !this.modoEscuro;
+        localStorage.setItem('fp_modoEscuro', this.modoEscuro);
+        
+        // Adicionar a atualização da tag <html> ao clicar no botão
+        if (this.modoEscuro) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    },
                 mudarCor(nomeCor) {
                     const p = this.paletasCores[nomeCor];
                     if (!p) return;
