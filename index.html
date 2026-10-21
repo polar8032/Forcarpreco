@@ -143,7 +143,7 @@
                         :class="['flex-1 py-3.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all duration-300', 
                                  tab === 'unit' ? 'bg-white dark:bg-gray-800 text-tema-600 dark:text-tema-400 shadow-md shadow-gray-200 dark:shadow-none' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white']">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                    Unitário
+                    Unidade
                 </button>
                 <button @click="mudarTab('weight')" 
                         :class="['flex-1 py-3.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all duration-300', 
@@ -153,39 +153,41 @@
                 </button>
             </div>
 
-            <!-- Card Principal de Inputs -->
-            <div class="p-6 rounded-[32px] shadow-xl mb-5 relative overflow-hidden flex-none transition-all bg-gray-900 border-b-8 border-tema-500 text-green-400 font-mono">
-                <div class="relative border-b border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
-                    <span class="text-xs font-bold uppercase tracking-widest text-gray-400">
-                        {{ tab === 'unit' ? 'Modo Unitário' : 'Modo Ao Peso' }}
+                        <!-- Card Principal de Inputs -->
+            <div class="p-6 rounded-[32px] shadow-sm border border-gray-200/80 dark:border-gray-800 mb-5 relative overflow-hidden flex-none transition-all bg-white dark:bg-gray-900 font-sans">
+                <div class="relative border-b border-gray-100 dark:border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
+                    <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                        {{ tab === 'unit' ? 'Modo Unidade' : 'Modo Ao Peso' }}
                     </span>
-                    <button @click="limparTudo" class="text-gray-500 hover:text-red-400 transition-colors p-2 rounded-xl bg-gray-800/60 hover:bg-gray-800" title="Limpar tudo">
+                    <button @click="limparTudo" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-800" title="Limpar tudo">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                     </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 items-end">
+                                <div class="grid grid-cols-2 gap-4 items-end">
                     <div>
-                        <label class="block text-xs font-bold uppercase mb-2 text-green-400/90 leading-tight">
-                            Está a passar a <span class="text-yellow-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+                        <label class="block text-xs font-bold uppercase mb-2.5 text-gray-500 dark:text-gray-400 leading-tight text-center">
+                            Passa a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
                         </label>
-                        <input type="text" inputmode="decimal" v-model="baseInput" @input="formatarInput('baseInput')" class="w-full border rounded-2xl p-3.5 text-center font-bold text-lg outline-none transition-all bg-gray-950/80 border-gray-700 text-green-400 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 placeholder-gray-700 shadow-inner" placeholder="0.00">
+                        <input type="text" inputmode="decimal" v-model="baseInput" @input="formatarInput('baseInput')" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase mb-2 text-green-400/90 leading-tight">
-                            Desconto Direto <span class="text-yellow-400">(€)</span>
+                        <label class="block text-xs font-bold uppercase mb-2.5 text-gray-500 dark:text-gray-400 leading-tight text-center">
+                            Desconto <span class="text-tema-500 dark:text-tema-400">(€)</span>
                         </label>
-                        <input type="text" inputmode="decimal" v-model="discInput" @input="formatarInput('discInput')" class="w-full border rounded-2xl p-3.5 text-center font-bold text-lg outline-none transition-all bg-gray-950/80 border-gray-700 text-green-400 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 placeholder-gray-700 shadow-inner" placeholder="0.00">
+                        <input type="text" inputmode="decimal" v-model="discInput" @input="formatarInput('discInput')" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
                     </div>
                 </div>
 
-                <div class="mt-6 pt-5 border-t border-gray-800">
-                    <label class="block text-xs font-bold uppercase mb-2 text-center tracking-wider text-green-400/90">
-                        Quero que passe a <span class="text-yellow-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+                <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
+                    <label class="block text-xs font-bold uppercase mb-3 text-center tracking-wider text-gray-500 dark:text-gray-400">
+                        Quero que passe a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
                     </label>
-                    <input type="text" inputmode="decimal" v-model="targetInput" @input="formatarInput('targetInput')" class="w-full border-2 rounded-2xl p-4 text-center font-bold text-3xl outline-none transition-all shadow-xl bg-gray-950 border-green-500/60 text-green-400 focus:border-green-400 focus:bg-gray-900 focus:ring-4 focus:ring-green-500/20 placeholder-gray-700" placeholder="0.00">
+                    <input type="text" inputmode="decimal" v-model="targetInput" @input="formatarInput('targetInput')" class="w-full border-2 border-transparent rounded-[28px] py-5 px-4 text-center font-black text-4xl outline-none transition-all bg-tema-50/70 dark:bg-gray-800 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-md placeholder-gray-300 dark:placeholder-gray-700" placeholder="0.00">
                 </div>
+
             </div>
+
 
             <!-- Card de Resultado Final -->
             <div class="bg-white dark:bg-gray-900 rounded-[32px] shadow-sm border border-gray-200/85 dark:border-gray-800 p-6 flex flex-col justify-center mb-6 flex-none backdrop-blur-sm transition-colors">
@@ -218,7 +220,7 @@
 
                         <div class="space-y-6">
                             <div>
-                                <h4 class="text-tema-600 dark:text-tema-400 font-extrabold text-base mb-2.5 flex items-center gap-2">Modo Unitário</h4>
+                                <h4 class="text-tema-600 dark:text-tema-400 font-extrabold text-base mb-2.5 flex items-center gap-2">Modo Unidade</h4>
                                 <ul class="space-y-3 pl-4 border-l-2 border-tema-100 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 font-medium">
                                     <li><strong class="text-gray-900 dark:text-white">Está a passar a:</strong> Insere o preço final (incorreto) que está a passar na caixa.</li>
                                     <li><strong class="text-gray-900 dark:text-white">Desconto direto:</strong> Valor do desconto (em €) que o sistema está a aplicar.</li>
@@ -389,15 +391,22 @@
                                     <div v-if="tabacosSelecionados.length === 0" class="text-center text-gray-600 text-xs py-12 italic">
                                         Nenhum item selecionado.
                                     </div>
-                                    <div v-for="(item, index) in tabacosSelecionados" :key="index" class="bg-gray-950 p-2.5 min-h-[3.5rem] rounded-xl border border-gray-800 flex justify-between items-center text-xs text-white gap-2">
-                                        <div class="flex-1 min-w-0">
-                                            <span class="font-bold text-tema-400 block break-words whitespace-normal leading-tight">{{ item.marca }}</span>
-                                            <p class="text-gray-300 text-[11px] break-words whitespace-normal leading-tight mt-0.5">{{ item.gama }}</p>
+                                                                        <div v-for="(item, index) in tabacosSelecionados" :key="index" class="bg-gray-950 p-2.5 min-h-[3.5rem] rounded-xl border border-gray-800 flex justify-between items-center text-xs text-white gap-2">
+                                        <div class="flex-1 min-w-0 flex items-start gap-2">
+                                            <!-- Indicador de Quantidade (só aparece se for > 1) -->
+                                            <span v-if="item.quantidade > 1" class="bg-tema-500/20 text-tema-400 border border-tema-500/30 px-1.5 py-0.5 rounded text-[10px] font-bold flex-shrink-0 mt-0.5">
+                                                {{ item.quantidade }}x
+                                            </span>
+                                            <div>
+                                                <span class="font-bold text-tema-400 block break-words whitespace-normal leading-tight">{{ item.marca }}</span>
+                                                <p class="text-gray-300 text-[11px] break-words whitespace-normal leading-tight mt-0.5">{{ item.gama }}</p>
+                                            </div>
                                         </div>
                                         <button @click="removerTabaco(index)" class="text-gray-500 hover:text-red-400 p-1.5 font-bold flex-shrink-0">
                                             ✕
                                         </button>
                                     </div>
+
                                 </div>
                             </div>
 
@@ -640,9 +649,20 @@
                 },
 
                 // Funções Tabaco
+                                // Funções Tabaco
                 adicionarTabaco(marca, gama) {
-                    this.tabacosSelecionados.push({ marca, gama });
+                    // Verifica se já existe um item com a mesma marca e gama
+                    const itemExistente = this.tabacosSelecionados.find(t => t.marca === marca && t.gama === gama);
+                    
+                    if (itemExistente) {
+                        // Se existir, apenas aumenta a quantidade
+                        itemExistente.quantidade++;
+                    } else {
+                        // Se não existir, adiciona à lista com quantidade inicial de 1
+                        this.tabacosSelecionados.push({ marca, gama, quantidade: 1 });
+                    }
                 },
+
                 removerTabaco(index) {
                     this.tabacosSelecionados.splice(index, 1);
                 },
