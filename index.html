@@ -91,6 +91,22 @@
         }
         .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+                /* Transições Suaves para Listas e Tabaco */
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease-in-out; }
+        .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+        .lista-enter-active, .lista-leave-active, .lista-move { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .lista-enter-from, .lista-leave-to { 
+            opacity: 0; 
+            transform: translateX(15px) scale(0.98); 
+        }
+        .lista-leave-active { 
+            position: absolute; 
+            width: calc(100% - 4px); 
+        }
     </style>
 </head>
 <body>
@@ -153,7 +169,7 @@
                 </button>
             </div>
 
-                        <!-- Card Principal de Inputs -->
+                                    <!-- Card Principal de Inputs -->
             <div class="p-6 rounded-[32px] shadow-sm border border-gray-200/80 dark:border-gray-800 mb-5 relative overflow-hidden flex-none transition-all bg-white dark:bg-gray-900 font-sans">
                 <div class="relative border-b border-gray-100 dark:border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
                     <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
@@ -164,31 +180,61 @@
                     </button>
                 </div>
 
-                                <div class="grid grid-cols-2 gap-4 items-end">
+                <div class="grid grid-cols-2 gap-4 items-start">
+                    <!-- Bloco: Está a passar a -->
                     <div>
-                        <label class="block text-xs font-bold uppercase mb-2.5 text-gray-500 dark:text-gray-400 leading-tight text-center">
-                            Passa a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
-                        </label>
-                        <input type="text" inputmode="decimal" v-model="baseInput" @input="formatarInput('baseInput')" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
+                        <div class="flex items-center justify-center gap-1.5 mb-2.5">
+                            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 leading-tight">
+                                Passa a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+                            </label>
+                            <button @click="dicaAtiva = dicaAtiva === 'base' ? null : 'base'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
+                        </div>
+                        <input type="text" inputmode="decimal" v-model="baseInput" @input="formatarInput('baseInput')" @focus="dicaAtiva = 'base'" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
+                        <!-- Dica -->
+                        <div v-if="dicaAtiva === 'base'" class="mt-2 text-[11px] text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-2.5 rounded-xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
+                            Preço errado que o artigo está a assumir na caixa.
+                        </div>
                     </div>
+
+                    <!-- Bloco: Desconto Direto -->
                     <div>
-                        <label class="block text-xs font-bold uppercase mb-2.5 text-gray-500 dark:text-gray-400 leading-tight text-center">
-                            Desconto <span class="text-tema-500 dark:text-tema-400">(€)</span>
-                        </label>
-                        <input type="text" inputmode="decimal" v-model="discInput" @input="formatarInput('discInput')" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
+                        <div class="flex items-center justify-center gap-1.5 mb-2.5">
+                            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 leading-tight">
+                                Desconto <span class="text-tema-500 dark:text-tema-400">(€)</span>
+                            </label>
+                            <button @click="dicaAtiva = dicaAtiva === 'disc' ? null : 'disc'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
+                        </div>
+                        <input type="text" inputmode="decimal" v-model="discInput" @input="formatarInput('discInput')" @focus="dicaAtiva = 'disc'" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
+                        <!-- Dica -->
+                        <div v-if="dicaAtiva === 'disc'" class="mt-2 text-[11px] text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-2.5 rounded-xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
+                            Valor em € do desconto direto que aparece no POS.
+                        </div>
                     </div>
                 </div>
 
-                                <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-                    <label class="block text-xs font-bold uppercase mb-2.5 text-gray-500 dark:text-gray-400">
-                        Quero que passe a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
-                    </label>
-                    <input type="text" inputmode="decimal" v-model="targetInput" @input="formatarInput('targetInput')" class="w-full border-2 border-transparent rounded-[28px] py-5 px-4 text-center font-black text-4xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-md placeholder-gray-300 dark:placeholder-gray-700" placeholder="0.00">
+                <!-- Bloco: Preço Final Desejado -->
+                <div class="mt-5 pt-5 border-t border-gray-100 dark:border-gray-800">
+                    <div class="flex items-center justify-center gap-1.5 mb-3">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            Quero que passe a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+                        </label>
+                        <button @click="dicaAtiva = dicaAtiva === 'target' ? null : 'target'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
+                    </div>
+                    <input type="text" inputmode="decimal" v-model="targetInput" @input="formatarInput('targetInput')" @focus="dicaAtiva = 'target'" class="w-full border-2 border-transparent rounded-[28px] py-5 px-4 text-center font-black text-4xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-md placeholder-gray-300 dark:placeholder-gray-700" placeholder="0.00">
+                    <!-- Dica -->
+                    <div v-if="dicaAtiva === 'target'" class="mt-3 text-[11px] sm:text-xs text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-3 rounded-2xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
+                        O preço correto pelo qual o cliente deve levar o artigo.
+                    </div>
                 </div>
-
-
+                
+                <!-- Botão de Exemplo Prático (Só aparece quando tudo está vazio) -->
+                <div v-if="!baseInput && !discInput && !targetInput" class="mt-4 text-center animate-fade-in">
+                    <button @click="preencherExemplo" class="text-[11px] font-bold text-tema-500 hover:text-tema-600 bg-tema-50 hover:bg-tema-100 dark:bg-tema-500/10 dark:hover:bg-tema-500/20 px-4 py-2 rounded-full transition-colors flex items-center justify-center gap-1.5 mx-auto">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        Tentar com um exemplo prático
+                    </button>
+                </div>
             </div>
-
 
             <!-- Card de Resultado Final -->
             <div class="bg-white dark:bg-gray-900 rounded-[32px] shadow-sm border border-gray-200/85 dark:border-gray-800 p-6 flex flex-col justify-center mb-6 flex-none backdrop-blur-sm transition-colors">
@@ -207,7 +253,7 @@
                 <p class="text-xs font-bold text-gray-400/80">Copyright Ricardo Salas</p>
             </div>
 
-            <!-- Modal Ajuda -->
+                       <!-- Modal Ajuda -->
             <transition name="modal">
                 <div v-if="mostrarAjuda" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
                     <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="mostrarAjuda = false"></div>
@@ -223,7 +269,7 @@
                             <div>
                                 <h4 class="text-tema-600 dark:text-tema-400 font-extrabold text-base mb-2.5 flex items-center gap-2">Modo Unidade</h4>
                                 <ul class="space-y-3 pl-4 border-l-2 border-tema-100 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 font-medium">
-                                    <li><strong class="text-gray-900 dark:text-white">Está a passar a:</strong> Insere o preço final (incorreto) que está a passar na caixa.</li>
+                                    <li><strong class="text-gray-900 dark:text-white">Passa a:</strong> Insere o preço final (incorreto) que está a passar na caixa.</li>
                                     <li><strong class="text-gray-900 dark:text-white">Desconto direto:</strong> Valor do desconto (em €) que o sistema está a aplicar.</li>
                                     <li><strong class="text-gray-900 dark:text-white">Quero que passe a:</strong> O preço final correto que pretendes que fique.</li>
                                     <li class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 p-3 rounded-2xl border-l-4 border-emerald-500 font-bold shadow-sm">
@@ -234,7 +280,7 @@
                             <div>
                                 <h4 class="text-tema-600 dark:text-tema-400 font-extrabold text-base mb-2.5 flex items-center gap-2">Modo Ao Peso (Kg)</h4>
                                 <ul class="space-y-3 pl-4 border-l-2 border-tema-100 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 font-medium">
-                                    <li><strong class="text-gray-900 dark:text-white">Está a passar a:</strong> Preço por Kg (incorreto) que está a passar na caixa.</li>
+                                    <li><strong class="text-gray-900 dark:text-white">Passa a:</strong> Preço por Kg (incorreto) que está a passar na caixa.</li>
                                     <li><strong class="text-gray-900 dark:text-white">Desconto direto:</strong> Valor do desconto (em €) que o sistema está a aplicar.</li>
                                     <li><strong class="text-gray-900 dark:text-white">Quero que passe a:</strong> Preço por Kg final correto que pretendes.</li>
                                     <li class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 p-3 rounded-2xl border-l-4 border-emerald-500 font-bold shadow-sm">
@@ -251,11 +297,10 @@
                 </div>
             </transition>
 
-                                                <!-- Modal Calculadora -->
+            <!-- Modal Calculadora -->
             <transition name="modal">
                 <div v-if="mostrarCalculadora" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
                     <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="mostrarCalculadora = false"></div>
-                    <!-- Adicionado overflow-y-auto, max-h-[95dvh] e pb-8 (espaço de segurança no fundo) -->
                     <div class="modal-content relative bg-white dark:bg-gray-950 w-full max-w-sm rounded-t-[36px] sm:rounded-[32px] p-5 pb-8 sm:p-6 shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col max-h-[95dvh] overflow-y-auto scrollbar-hide">
                     
                         <!-- Cabeçalho Calculadora -->
@@ -266,7 +311,7 @@
                             </button>
                         </div>
 
-                        <!-- Visor Calculadora (Espaços ligeiramente reduzidos de p-5 para p-4) -->
+                        <!-- Visor Calculadora -->
                         <div class="bg-gray-50 dark:bg-gray-900 rounded-3xl p-4 mb-4 text-right border border-gray-100 dark:border-gray-800 flex-none shadow-sm transition-colors">
                             <div class="text-xs text-gray-500 dark:text-gray-400 h-6 font-medium overflow-hidden text-ellipsis whitespace-nowrap">
                                 {{ calcExpressaoCompleta || '&nbsp;' }}
@@ -315,7 +360,7 @@
                             </div>
                         </div>
 
-                        <!-- Teclado Calculadora (Mudado de gap-2.5 para gap-2 e de py-3.5 para py-3) -->
+                        <!-- Teclado Calculadora -->
                         <div class="grid grid-cols-4 gap-2 flex-none" :class="{'hidden': mostrarHistorico}">
                             <button @click="calcLimpar" class="col-span-2 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-500 dark:text-red-400 font-extrabold py-3 rounded-2xl text-lg transition-colors border border-red-100 dark:border-transparent">AC</button>
                             <button @click="calcPercentagem" class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-extrabold py-3 rounded-2xl text-lg transition-colors">%</button>
@@ -348,91 +393,110 @@
                 </div>
             </transition>
 
-
-
-
-                        <!-- Modal Tabaco -->
+            <!-- Modal Tabaco -->
             <transition name="modal">
                 <div v-if="mostrarTabaco" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
                     <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="mostrarTabaco = false"></div>
                     <div class="modal-content relative bg-white dark:bg-gray-950 w-full max-w-lg rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col max-h-[92dvh]">   
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-extrabold text-gray-900 dark:text-white">Seleção de Tabaco</h3>
+                        
+                        <!-- Cabeçalho com Botão de Ajuda -->
+                        <div class="flex justify-between items-center mb-4 flex-none">
+                            <div class="flex items-center gap-2.5">
+                                <h3 class="text-xl font-extrabold text-gray-900 dark:text-white">Seleção de Tabaco</h3>
+                                <button @click="dicaTabaco = !dicaTabaco" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-black transition-colors" title="Para que serve?">?</button>
+                            </div>
                             <button @click="mostrarTabaco = false" class="p-2 bg-gray-100 dark:bg-gray-900 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             </button>
                         </div>
 
+                        <!-- Dica de Ajuda Interativa -->
+                        <transition name="fade">
+                            <div v-if="dicaTabaco" class="mb-4 text-xs text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-3.5 rounded-2xl font-medium border border-tema-100 dark:border-tema-500/20 text-center flex-none">
+                                Clica nas marcas para veres as gamas. Anota no <strong>lado direito</strong> os maços que faltam na tua caixa. Assim fica fácil saberes exatamente o que apanhar para repor!
+                            </div>
+                        </transition>
+
                         <!-- Conteúdo Dividido em 2 Lados -->
                         <div class="grid grid-cols-2 gap-4 flex-1 overflow-hidden min-h-[320px]">
                             
                             <!-- Lado Esquerdo: Marcas e Gamas -->
-                            <div class="bg-gray-50 dark:bg-gray-900 rounded-3xl p-3 flex flex-col overflow-y-auto border border-gray-100 dark:border-gray-800/80 scrollbar-hide">
-                                <div v-if="!marcaSelecionada">
-                                    <p class="text-xs font-bold uppercase text-tema-500 dark:text-tema-400 mb-3 px-2">Marcas</p>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <button v-for="marca in marcasTabaco" :key="marca.nome" @click="marcaSelecionada = marca" class="h-24 bg-white dark:bg-gray-950 hover:border-tema-400 dark:hover:border-tema-500 hover:shadow-sm p-2 rounded-2xl text-gray-700 dark:text-gray-200 text-xs font-bold flex flex-col items-center justify-center gap-1.5 border border-gray-200 dark:border-gray-800 transition-all w-full">
-                                            <span class="text-xl flex-shrink-0">🚬</span>
-                                            <span class="w-full text-center break-words whitespace-normal leading-tight">{{ marca.nome }}</span>
-                                        </button>
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-3xl p-3 flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800/80">
+                                <transition name="fade" mode="out-in">
+                                    
+                                    <!-- Marcas -->
+                                    <div v-if="!marcaSelecionada" key="marcas" class="flex flex-col h-full">
+                                        <p class="text-xs font-bold uppercase text-tema-500 dark:text-tema-400 mb-3 px-2 flex-none">Marcas</p>
+                                        <div class="grid grid-cols-2 gap-2 overflow-y-auto pr-1 pb-1 flex-1 scrollbar-hide">
+                                            <button v-for="marca in marcasTabaco" :key="marca.nome" @click="marcaSelecionada = marca" class="h-24 bg-white dark:bg-gray-950 hover:border-tema-400 dark:hover:border-tema-500 hover:shadow-sm p-2 rounded-2xl text-gray-700 dark:text-gray-200 text-xs font-bold flex flex-col items-center justify-center gap-1.5 border border-gray-200 dark:border-gray-800 transition-all w-full">
+                                                <span class="text-xl flex-shrink-0">🚬</span>
+                                                <span class="w-full text-center break-words whitespace-normal leading-tight">{{ marca.nome }}</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div v-else class="flex flex-col h-full animate-fade-in">
-                                    <div class="flex items-center justify-between mb-3 px-1">
-                                        <button @click="marcaSelecionada = null" class="text-xs text-tema-600 dark:text-tema-400 hover:text-tema-700 dark:hover:text-tema-300 font-bold flex items-center gap-1 bg-tema-50 dark:bg-tema-500/10 px-2.5 py-1.5 rounded-lg">
-                                            ← Voltar
-                                        </button>
-                                        <span class="text-xs font-bold text-gray-900 dark:text-white">{{ marcaSelecionada.nome }}</span>
+                                    
+                                    <!-- Gamas -->
+                                    <div v-else key="gamas" class="flex flex-col h-full">
+                                        <div class="flex items-center justify-between gap-2 mb-3 px-1 flex-none w-full">
+                                            <button @click="marcaSelecionada = null" class="text-[10px] sm:text-xs text-tema-600 dark:text-tema-400 hover:text-tema-700 dark:hover:text-tema-300 font-bold flex items-center gap-1 bg-tema-50 dark:bg-tema-500/10 px-2 py-1.5 rounded-lg transition-colors flex-shrink-0">
+                                                ← Voltar
+                                            </button>
+                                            <span class="text-xs font-bold text-gray-900 dark:text-white truncate text-right flex-1" :title="marcaSelecionada.nome">{{ marcaSelecionada.nome }}</span>
+                                        </div>
+                                        <p class="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500 mb-2 px-1 flex-none">Selecionar Gama</p>
+                                        <div class="space-y-2 overflow-y-auto flex-1 pr-1 pb-1 scrollbar-hide">
+                                            <button v-for="gama in marcaSelecionada.gamas" :key="gama" @click="adicionarTabaco(marcaSelecionada.nome, gama)" class="w-full min-h-[3.25rem] text-left bg-white dark:bg-gray-950 hover:bg-tema-50 dark:hover:bg-gray-800 hover:border-tema-300 dark:hover:border-tema-500 p-2.5 rounded-2xl text-gray-700 dark:text-gray-200 text-xs font-semibold border border-gray-200 dark:border-gray-800 transition-all flex justify-between items-center gap-2 shadow-sm">
+                                                <span class="flex-1 break-words whitespace-normal leading-tight">{{ gama }}</span>
+                                                <span class="bg-tema-100 dark:bg-tema-500/20 text-tema-600 dark:text-tema-400 w-6 h-6 flex items-center justify-center rounded-full text-sm font-bold flex-shrink-0 transition-colors">+</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <p class="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500 mb-2 px-1">Selecionar Gama</p>
-                                    <div class="space-y-2 overflow-y-auto flex-1 pr-1">
-                                        <button v-for="gama in marcaSelecionada.gamas" :key="gama" @click="adicionarTabaco(marcaSelecionada.nome, gama)" class="w-full min-h-[3.25rem] text-left bg-white dark:bg-gray-950 hover:bg-tema-50 dark:hover:bg-gray-800 hover:border-tema-300 dark:hover:border-tema-500 p-2.5 rounded-2xl text-gray-700 dark:text-gray-200 text-xs font-semibold border border-gray-200 dark:border-gray-800 transition-all flex justify-between items-center gap-2 shadow-sm">
-                                            <span class="flex-1 break-words whitespace-normal leading-tight">{{ gama }}</span>
-                                            <!-- O icone '+' ganha um estilo de botão de tema -->
-                                            <span class="bg-tema-100 dark:bg-tema-500/20 text-tema-600 dark:text-tema-400 w-6 h-6 flex items-center justify-center rounded-full text-sm font-bold flex-shrink-0">+</span>
-                                        </button>
-                                    </div>
-                                </div>
+                                </transition>
                             </div>
 
                             <!-- Lado Direito: Notas / Selecionados -->
-                            <div class="bg-gray-50 dark:bg-gray-900 rounded-3xl p-3 flex flex-col overflow-y-auto border border-gray-100 dark:border-gray-800/80 scrollbar-hide">
-                                <div class="flex justify-between items-center mb-3 px-2">
-                                    <span class="text-xs font-bold uppercase text-tema-500 dark:text-tema-400">Selecionados</span>
-                                    <button v-if="tabacosSelecionados.length > 0" @click="tabacosSelecionados = []" class="text-[10px] bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 px-2 py-1 rounded-md font-bold transition-colors">Limpar</button>
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-3xl p-3 flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800/80">
+                                <div class="flex justify-between items-center mb-3 px-2 flex-none gap-2">
+                                    <span class="text-xs font-bold uppercase text-tema-500 dark:text-tema-400 truncate">Selecionados</span>
+                                    <button v-if="tabacosSelecionados.length > 0" @click="tabacosSelecionados = []" class="text-gray-400 hover:text-red-500 transition-colors p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800/60 hover:bg-gray-200 dark:hover:bg-gray-800 flex-shrink-0" title="Limpar tudo">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                    </button>
                                 </div>
-                                <div class="flex-1 overflow-y-auto space-y-2 pr-1">
-                                    <div v-if="tabacosSelecionados.length === 0" class="text-center text-gray-400 dark:text-gray-600 text-xs py-12 italic">
-                                        Nenhum item selecionado.
-                                    </div>
-                                    <div v-for="(item, index) in tabacosSelecionados" :key="index" class="bg-white dark:bg-gray-950 p-2.5 min-h-[3.5rem] rounded-2xl border border-gray-200 dark:border-gray-800 flex justify-between items-center text-xs text-gray-900 dark:text-white gap-2 shadow-sm">
-                                        <div class="flex-1 min-w-0 flex items-start gap-2">
-                                            <!-- Indicador de Quantidade ganha melhor aspeto com a cor base -->
-                                            <span v-if="item.quantidade > 1" class="bg-tema-100 dark:bg-tema-500/20 text-tema-600 dark:text-tema-400 border border-tema-200 dark:border-tema-500/30 px-1.5 py-0.5 rounded-md text-[10px] font-bold flex-shrink-0 mt-0.5">
-                                                {{ item.quantidade }}x
-                                            </span>
-                                            <div>
-                                                <span class="font-bold text-tema-600 dark:text-tema-400 block break-words whitespace-normal leading-tight">{{ item.marca }}</span>
-                                                <p class="text-gray-500 dark:text-gray-400 text-[11px] break-words whitespace-normal leading-tight mt-0.5">{{ item.gama }}</p>
-                                            </div>
+                                
+                                <div class="flex-1 overflow-y-auto pr-1 pb-1 scrollbar-hide">
+                                    <transition name="fade">
+                                        <div v-if="tabacosSelecionados.length === 0" class="text-center text-gray-400 dark:text-gray-600 text-xs py-12 italic">
+                                            Nenhum item selecionado.
                                         </div>
-                                        <!-- Cruz de remoção mais elegante -->
-                                        <button @click="removerTabaco(index)" class="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-1.5 rounded-lg font-bold flex-shrink-0 transition-colors">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                        </button>
-                                    </div>
+                                    </transition>
+                                    
+                                    <transition-group name="lista" tag="div" class="space-y-2 relative">
+                                        <div v-for="(item, index) in tabacosSelecionados" :key="item.marca + '-' + item.gama" class="bg-white dark:bg-gray-950 p-2.5 min-h-[3.5rem] rounded-2xl border border-gray-200 dark:border-gray-800 flex justify-between items-center text-xs text-gray-900 dark:text-white gap-2 shadow-sm">
+                                            <div class="flex-1 min-w-0 flex items-start gap-2">
+                                                <span v-if="item.quantidade > 1" class="bg-tema-100 dark:bg-tema-500/20 text-tema-600 dark:text-tema-400 border border-tema-200 dark:border-tema-500/30 px-1.5 py-0.5 rounded-md text-[10px] font-bold flex-shrink-0 mt-0.5">
+                                                    {{ item.quantidade }}x
+                                                </span>
+                                                <div>
+                                                    <span class="font-bold text-tema-600 dark:text-tema-400 block break-words whitespace-normal leading-tight">{{ item.marca }}</span>
+                                                    <p class="text-gray-500 dark:text-gray-400 text-[11px] break-words whitespace-normal leading-tight mt-0.5">{{ item.gama }}</p>
+                                                </div>
+                                            </div>
+                                            <button @click="removerTabaco(index)" class="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-1.5 rounded-lg font-bold flex-shrink-0 transition-colors">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                            </button>
+                                        </div>
+                                    </transition-group>
                                 </div>
                             </div>
                         </div>
 
-                        <button @click="mostrarTabaco = false" class="w-full mt-4 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-white py-3.5 rounded-2xl font-bold text-sm transition-all border border-gray-200 dark:border-gray-800">
+                        <button @click="mostrarTabaco = false" class="w-full mt-4 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-white py-3.5 rounded-2xl font-bold text-sm transition-all border border-gray-200 dark:border-gray-800 flex-none">
                             Fechar Janela
                         </button>
                     </div>
                 </div>
             </transition>
 
-             
             <!-- Modal Personalização -->
             <transition name="modal">
                 <div v-if="mostrarOpcoes" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
@@ -456,7 +520,6 @@
 
                         <!-- Escolha de Cores -->
                         <div class="mb-6">
-                            
                             <div class="grid grid-cols-4 gap-3">
                                 <button v-for="(paleta, nome) in paletasCores" :key="nome"
                                         @click="mudarCor(nome)"
@@ -473,6 +536,7 @@
                     </div>
                 </div>
             </transition>
+
 
         </main>
     </div>
@@ -521,7 +585,8 @@
                     baseInput: '',
                     discInput: '',
                     targetInput: '',
-
+                    dicaAtiva: null, // Controla qual tooltip está aberta
+                    dicaTabaco: false, // Controla a dica do modal tabaco
                     mostrarCalculadora: false,
                     mostrarHistorico: false,
                     calcDisplay: '0',
@@ -687,6 +752,18 @@
 
                 mudarTab(novaTab) { this.tab = novaTab; this.limparTudo(); },
                 limparTudo() { this.baseInput = ''; this.discInput = ''; this.targetInput = ''; },
+                preencherExemplo() {
+                    if (this.tab === 'unit') {
+                        this.baseInput = '2.50';
+                        this.discInput = '0.50';
+                        this.targetInput = '1.00';
+                    } else {
+                        this.baseInput = '10.50';
+                        this.discInput = '2.00';
+                        this.targetInput = '5.00';
+                    }
+                    this.dicaAtiva = null;
+                },
                 formatarInput(campo) { this[campo] = this[campo].replace(',', '.'); },
                 async partilhar() { 
                      const data = { title: 'Forçar Preço', text: 'Calculadora rápida.', url: window.location.href };
