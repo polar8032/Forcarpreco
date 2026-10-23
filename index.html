@@ -158,25 +158,7 @@
                         🎨
                     </button>
                  
-                                                            <!-- Botão Assistente Mágico com Tooltip -->
-                    <div class="relative flex items-center justify-center">
-                        <button @click="iniciarAssistente" class="bg-tema-50 dark:bg-gray-800 text-tema-600 dark:text-tema-400 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-bold hover:bg-tema-100 dark:hover:bg-gray-700 shadow-sm transition-all text-xl z-10" title="Assistente Passo-a-Passo">
-                            🪄
-                        </button>
-                        
-                        <!-- Etiqueta Flutuante (Tooltip) -->
-                        <transition name="fade">
-                            <div v-if="mostrarDicaAssistente" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 pointer-events-none">
-                                <div class="bg-tema-600 dark:bg-tema-500 text-white text-[10px] sm:text-xs font-bold py-1.5 px-3 rounded-xl shadow-lg whitespace-nowrap animate-bounce flex flex-col items-center">
-                                    <!-- Pequeno triângulo a apontar para cima -->
-                                    <div class="absolute -top-1 w-2.5 h-2.5 bg-tema-600 dark:bg-tema-500 rotate-45 rounded-sm"></div>
-                                    <span class="relative z-10">Faz a conta aqui! ✨</span>
-                                </div>
-                            </div>
-                        </transition>
-                    </div>
-
-
+                                                            
                     
                     <!-- Botão Ajuda -->
                     <button @click="mostrarAjuda = true" class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-bold hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm transition-all">
@@ -202,17 +184,44 @@
             </div>
 
                                     <!-- Card Principal de Inputs -->
-<div class="p-6 rounded-[32px] shadow-sm border border-gray-200/80 dark:border-gray-800 mb-5 relative overflow-hidden flex-none bg-white dark:bg-gray-900 font-sans transition-all">
+<div class="p-6 rounded-[32px] shadow-sm border border-gray-200/80 dark:border-gray-800 mb-5 relative flex-none bg-white dark:bg-gray-900 font-sans transition-all">
     <transition name="fade" mode="out-in">
         <div :key="tab">
-            <div class="relative border-b border-gray-100 dark:border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
-                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-                    {{ tab === 'unit' ? 'Modo Unidade' : 'Modo Ao Peso' }}
-                </span>
+                        <div class="relative border-b border-gray-100 dark:border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
+                
+                <!-- Lado Esquerdo: Título + Botão Robô -->
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                        {{ tab === 'unit' ? 'Modo Unidade' : 'Modo Ao Peso' }}
+                    </span>
+                    
+                    <!-- Novo Botão Assistente Robô -->
+                    <div class="relative flex items-center justify-center">
+                        <button @click="iniciarAssistente" class="bg-tema-50 dark:bg-tema-900/30 text-tema-600 dark:text-tema-400 w-8 h-8 rounded-xl flex items-center justify-center hover:bg-tema-100 dark:hover:bg-tema-800 shadow-sm transition-all text-lg border border-tema-100 dark:border-tema-800/50 z-10" title="Assistente Inteligente">
+                            🤖
+                        </button>
+                        
+                                                <!-- Etiqueta Flutuante (Tooltip) redesenhada -->
+                        <transition name="fade">
+                            <!-- Mudámos top-full mt-2 para bottom-full mb-2 para ir para cima -->
+                            <div v-if="mostrarDicaAssistente" class="absolute bottom-full left-0 mb-2 z-50 pointer-events-none w-56">
+                                <div class="bg-tema-600 dark:bg-tema-500 text-white text-[11px] font-bold py-2 px-3 rounded-xl shadow-lg animate-bounce flex flex-col items-start text-left leading-tight">
+                                    <!-- Triângulo agora aponta para baixo (-bottom-1 em vez de -top-1) -->
+                                    <div class="absolute -bottom-1 left-3 w-2.5 h-2.5 bg-tema-600 dark:bg-tema-500 rotate-45 rounded-sm"></div>
+                                    <span class="relative z-10">Estás confuso/a? Clica em mim, eu ajudo-te a fazer a conta.</span>
+                                </div>
+                            </div>
+                        </transition>
+
+                    </div>
+                </div>
+
+                <!-- Botão Limpar Tudo (Vassoura) -->
                 <button @click="limparTudo" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-800" title="Limpar tudo">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                 </button>
             </div>
+
 
             <div class="grid grid-cols-2 gap-4 items-start">
                 <!-- Bloco: Está a passar a -->
@@ -260,11 +269,11 @@
         </div>
     </transition>
     
-    <!-- Botão de Exemplo Prático (Mantém-se debaixo da transição para não saltar) -->
+        <!-- Botão de Tutorial Interativo -->
     <div v-if="!baseInput && !discInput && !targetInput" class="mt-4 text-center animate-fade-in">
-        <button @click="preencherExemplo" class="text-[11px] font-bold text-tema-500 hover:text-tema-600 bg-tema-50 hover:bg-tema-100 dark:bg-tema-500/10 dark:hover:bg-tema-500/20 px-4 py-2 rounded-full transition-colors flex items-center justify-center gap-1.5 mx-auto">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-            Tentar com um exemplo prático
+        <button @click="iniciarTutorial" class="text-[11px] font-bold text-tema-500 hover:text-tema-600 bg-tema-50 hover:bg-tema-100 dark:bg-tema-500/10 dark:hover:bg-tema-500/20 px-4 py-2.5 rounded-full transition-colors flex items-center justify-center gap-1.5 mx-auto border border-tema-100/50 dark:border-tema-500/20">
+            <span class="text-sm">💡</span>
+            Ver tutorial passo a passo
         </button>
     </div>
 </div>
@@ -296,7 +305,7 @@
                         <!-- Header do Assistente -->
                         <div class="flex justify-between items-center mb-6 flex-none">
                             <h3 class="text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-                                🪄 Assistente
+                                🤖 Assistente
                             </h3>
                             <button @click="fecharAssistente" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -315,7 +324,7 @@
                                 <!-- PASSO 1: Escolher Unidade ou Peso -->
                                 <div v-if="passoAssistente === 1" key="passo1" class="w-full flex flex-col items-center">
                                     <div class="flex items-start gap-3 mb-6 w-full">
-                                        <div class="text-3xl pt-1">🧙‍♂️</div>
+                                        <div class="text-3xl pt-1">🤖</div>
                                         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
                                             <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">Olá! Vamos forçar um preço. Para começar, o artigo é vendido à unidade ou ao peso?</p>
                                         </div>
@@ -337,7 +346,7 @@
                                 <!-- PASSO 2: Preço a que está a passar -->
                                 <div v-else-if="passoAssistente === 2" key="passo2" class="w-full">
                                     <div class="flex items-start gap-3 mb-6 w-full">
-                                        <div class="text-3xl pt-1">🧙‍♂️</div>
+                                        <div class="text-3xl pt-1">🤖</div>
                                         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
                                             <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">Boa escolha. Qual é o preço (errado) que a caixa está a assumir neste momento?</p>
                                         </div>
@@ -351,7 +360,7 @@
                                 <!-- PASSO 3: Desconto Direto -->
                                 <div v-else-if="passoAssistente === 3" key="passo3" class="w-full">
                                     <div class="flex items-start gap-3 mb-6 w-full">
-                                        <div class="text-3xl pt-1">🧙‍♂️</div>
+                                        <div class="text-3xl pt-1">🤖</div>
                                         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
                                             <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">Entendido! E qual é o valor do desconto direto que aparece lá no POS?</p>
                                         </div>
@@ -365,7 +374,7 @@
                                 <!-- PASSO 4: Preço Final Desejado -->
                                 <div v-else-if="passoAssistente === 4" key="passo4" class="w-full">
                                     <div class="flex items-start gap-3 mb-6 w-full">
-                                        <div class="text-3xl pt-1">🧙‍♂️</div>
+                                        <div class="text-3xl pt-1">🤖</div>
                                         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
                                             <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">Quase lá! Para finalizar, a que preço correto queres que o cliente leve o artigo?</p>
                                         </div>
@@ -416,6 +425,105 @@
                             </button>
                         </div>
 
+                    </div>
+                </div>
+            </transition>
+
+                      <!-- Modal Tutorial (Como Funciona) -->
+            <transition name="modal">
+                <div v-if="mostrarTutorial" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+                    <div class="absolute inset-0 bg-black/60 backdrop-blur-md" @click="fecharTutorial"></div>
+                    <div class="modal-content relative bg-white dark:bg-gray-900 w-full max-w-sm rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col min-h-[420px]">
+                        
+                        <!-- Header -->
+                        <div class="flex justify-between items-center mb-6 flex-none">
+                            <h3 class="text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                                💡 Como Funciona?
+                            </h3>
+                            <button @click="fecharTutorial" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Barra de Progresso (Amarela para diferenciar do Assistente principal) -->
+                        <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 mb-6">
+                            <div class="bg-amber-400 dark:bg-amber-500 h-2 rounded-full transition-all duration-500 ease-out" :style="{ width: (passoTutorial * 25) + '%' }"></div>
+                        </div>
+
+                                                                        <!-- Conteúdo da Explicação -->
+                        <div class="flex-1 flex flex-col justify-center transition-all duration-300 relative">
+                            <transition name="fade" mode="out-in">
+                                
+                                <!-- Passo 1 -->
+                                <div v-if="passoTutorial === 1" key="tut1" class="w-full">
+                                    <div class="flex items-start gap-3 mb-6 w-full">
+                                        <div class="text-3xl pt-1">👨‍🏫</div>
+                                        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">Imagina que o cliente viu um artigo marcado a 1€, mas ao registar na caixa ele passa a <strong>2.50€</strong>...</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center p-4 border-2 border-tema-400 rounded-2xl bg-white dark:bg-gray-950 shadow-md">
+                                        <span class="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 block mb-1">Passa a (€)</span>
+                                        <span class="text-4xl font-black text-gray-900 dark:text-white">2.50</span>
+                                    </div>
+                                </div>
+
+                                <!-- Passo 2 -->
+                                <div v-else-if="passoTutorial === 2" key="tut2" class="w-full">
+                                    <div class="flex items-start gap-3 mb-6 w-full">
+                                        <div class="text-3xl pt-1">👨‍🏫</div>
+                                        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">...e vês que no POS o artigo passa com <strong>0.50€</strong> de desconto direto (ou seja ele custa 3€ sem desconto).</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center p-4 border-2 border-tema-400 rounded-2xl bg-white dark:bg-gray-950 shadow-md">
+                                        <span class="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 block mb-1">Desconto (€)</span>
+                                        <span class="text-4xl font-black text-gray-900 dark:text-white">0.50</span>
+                                    </div>
+                                </div>
+
+                                <!-- Passo 3 -->
+                                <div v-else-if="passoTutorial === 3" key="tut3" class="w-full">
+                                    <div class="flex items-start gap-3 mb-6 w-full">
+                                        <div class="text-3xl pt-1">👨‍🏫</div>
+                                        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">Como temos de assumir o preço que o cliente viu, o nosso objetivo é que o preço final seja exatamente <strong>1.00€</strong>.</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center p-4 border-2 border-emerald-500 rounded-2xl bg-white dark:bg-gray-950 shadow-md">
+                                        <span class="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 block mb-1">Quero que passe a (€)</span>
+                                        <span class="text-4xl font-black text-emerald-500 dark:text-emerald-400">1.00</span>
+                                    </div>
+                                </div>
+
+                                <!-- Passo 4 -->
+                                <div v-else-if="passoTutorial === 4" key="tut4" class="text-center w-full flex flex-col items-center">
+                                    <div class="flex items-start gap-3 mb-6 w-full">
+                                        <div class="text-3xl pt-1">👨‍🏫</div>
+                                        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none text-left shadow-sm border border-gray-200/50 dark:border-gray-700/50">
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-snug">Se forçares logo a 1€, a caixa vai aplicar o desconto por cima e fica errado! A app diz-te que deves forçar a <strong>1.20€</strong> no POS. Assim, após o desconto automático do sistema, o valor final bate certo!</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-6xl font-extrabold font-mono text-gray-900 dark:text-white tracking-tighter mb-4">
+                                        €1.20
+                                    </div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 px-2">A calculadora atrás de ti foi preenchida. Fecha a janela para veres!</p>
+                                </div>
+                            </transition>
+                        </div>
+
+
+
+                        <!-- Botões de Navegação -->
+                        <div class="flex gap-3 mt-8 flex-none h-14">
+                            <button v-if="passoTutorial < 4" @click="proximoPassoTutorial" class="w-full rounded-2xl font-bold text-gray-900 bg-amber-400 hover:bg-amber-300 shadow-lg shadow-amber-400/30 transition-all">
+                                Entendido, seguinte
+                            </button>
+                            <button v-if="passoTutorial === 4" @click="fecharTutorial" class="w-full rounded-2xl font-bold text-white bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/30 transition-all flex items-center justify-center gap-2">
+                                Concluir e Ver
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </transition>
@@ -848,6 +956,9 @@
                     mostrarAssistente: false,
                     passoAssistente: 1,
                     mostrarDicaAssistente: false,
+                    // 👇 NOVAS PROPRIEDADES DO TUTORIAL 👇
+                    mostrarTutorial: false,
+                    passoTutorial: 1,
 
 
                     // Propriedades de Personalização
@@ -913,7 +1024,7 @@
                     // ESCONDE SOZINHA APÓS 5 SEGUNDOS
                     setTimeout(() => {
                         this.mostrarDicaAssistente = false;
-                    }, 5000);
+                    }, 10000);
                 }, 1000);
             },
             
@@ -1051,18 +1162,33 @@ else {
                 },
 
 
-                preencherExemplo() {
-                    if (this.tab === 'unit') {
-                        this.baseInput = '2.50';
-                        this.discInput = '0.50';
-                        this.targetInput = '1.00';
-                    } else {
-                        this.baseInput = '10.50';
-                        this.discInput = '2.00';
-                        this.targetInput = '5.00';
-                    }
-                    this.dicaAtiva = null;
+                              iniciarTutorial() {
+                    this.tab = 'unit'; // O tutorial foca no modo unidade para ser simples de entender
+                    this.limparTudo();
+                    this.passoTutorial = 1;
+                    this.mostrarTutorial = true;
                 },
+                proximoPassoTutorial() {
+                    // Preenche automaticamente o fundo APENAS PARA VISUALIZAÇÃO
+                    if (this.passoTutorial === 1) this.baseInput = '2.50';
+                    if (this.passoTutorial === 2) this.discInput = '0.50';
+                    if (this.passoTutorial === 3) this.targetInput = '1.00';
+                    
+                    if (this.passoTutorial < 4) {
+                        this.passoTutorial++;
+                    } else {
+                        // Se clicou no botão "Concluir e Ver" no passo 4, fecha o tutorial MAS MANTÉM OS DADOS
+                        this.mostrarTutorial = false;
+                    }
+                },
+                fecharTutorial() {
+                    // Se fechou a janela A MEIO ou pela cruz, limpa os dados para mostrar o botão novamente
+                    if (this.passoTutorial < 4) {
+                        this.limparTudo();
+                    }
+                    this.mostrarTutorial = false;
+                },
+
                 formatarInput(campo) { this[campo] = this[campo].replace(',', '.'); },
                 async partilhar() { 
                      const data = { title: 'Forçar Preço', text: 'Calculadora rápida.', url: window.location.href };
