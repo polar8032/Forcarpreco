@@ -157,6 +157,26 @@
                     <button @click="mostrarOpcoes = true" class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-bold hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm transition-all" title="Personalizar">
                         🎨
                     </button>
+                 
+                                                            <!-- Botão Assistente Mágico com Tooltip -->
+                    <div class="relative flex items-center justify-center">
+                        <button @click="iniciarAssistente" class="bg-tema-50 dark:bg-gray-800 text-tema-600 dark:text-tema-400 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-bold hover:bg-tema-100 dark:hover:bg-gray-700 shadow-sm transition-all text-xl z-10" title="Assistente Passo-a-Passo">
+                            🪄
+                        </button>
+                        
+                        <!-- Etiqueta Flutuante (Tooltip) -->
+                        <transition name="fade">
+                            <div v-if="mostrarDicaAssistente" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 pointer-events-none">
+                                <div class="bg-tema-600 dark:bg-tema-500 text-white text-[10px] sm:text-xs font-bold py-1.5 px-3 rounded-xl shadow-lg whitespace-nowrap animate-bounce flex flex-col items-center">
+                                    <!-- Pequeno triângulo a apontar para cima -->
+                                    <div class="absolute -top-1 w-2.5 h-2.5 bg-tema-600 dark:bg-tema-500 rotate-45 rounded-sm"></div>
+                                    <span class="relative z-10">Faz a conta aqui! ✨</span>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+
+
                     
                     <!-- Botão Ajuda -->
                     <button @click="mostrarAjuda = true" class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-bold hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm transition-all">
@@ -266,6 +286,88 @@
             <div class="mt-auto py-6 text-center">
                 <p class="text-xs font-bold text-gray-400/80">Copyright Ricardo Salas</p>
             </div>
+          
+                                   <!-- Modal Assistente Passo-a-Passo -->
+            <transition name="modal">
+                <div v-if="mostrarAssistente" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+                    <div class="absolute inset-0 bg-black/60 backdrop-blur-md" @click="fecharAssistente"></div>
+                    <div class="modal-content relative bg-white dark:bg-gray-900 w-full max-w-sm rounded-t-[36px] sm:rounded-[32px] p-6 shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col min-h-[380px]">
+                        
+                        <!-- Header do Assistente -->
+                        <div class="flex justify-between items-center mb-6 flex-none">
+                            <h3 class="text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                                🪄 Assistente
+                            </h3>
+                            <button @click="fecharAssistente" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Barra de Progresso -->
+                        <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 mb-8">
+                            <div class="bg-tema-500 h-2 rounded-full transition-all duration-500 ease-out" :style="{ width: (passoAssistente * 25) + '%' }"></div>
+                        </div>
+
+                        <!-- Conteúdo Dinâmico dos Passos -->
+                        <div class="flex-1 flex flex-col justify-center transition-all duration-300 relative">
+                            <transition name="fade" mode="out-in">
+                                
+                                <!-- PASSO 1: Preço a que está a passar -->
+                                <div v-if="passoAssistente === 1" key="passo1" class="text-center w-full">
+                                    <h4 class="text-lg font-bold text-gray-700 dark:text-gray-200 mb-4">A que preço está a passar na caixa?</h4>
+                                    <span class="text-sm font-bold text-tema-500 mb-2 block">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+                                    <input type="text" inputmode="decimal" v-model="baseInput" @input="formatarInput('baseInput')" autofocus class="w-full border-2 border-gray-200 dark:border-gray-700 rounded-2xl py-4 px-4 text-center font-extrabold text-3xl outline-none transition-all bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:border-tema-500 placeholder-gray-300" placeholder="0.00">
+                                </div>
+
+                                <!-- PASSO 2: Desconto Direto -->
+                                <div v-else-if="passoAssistente === 2" key="passo2" class="text-center w-full">
+                                    <h4 class="text-lg font-bold text-gray-700 dark:text-gray-200 mb-4">Qual é o valor do desconto direto?</h4>
+                                    <span class="text-sm font-bold text-tema-500 mb-2 block">(€)</span>
+                                    <input type="text" inputmode="decimal" v-model="discInput" @input="formatarInput('discInput')" autofocus class="w-full border-2 border-gray-200 dark:border-gray-700 rounded-2xl py-4 px-4 text-center font-extrabold text-3xl outline-none transition-all bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:border-tema-500 placeholder-gray-300" placeholder="0.00">
+                                </div>
+
+                                                                <!-- PASSO 3: Preço Final Desejado -->
+                                <div v-else-if="passoAssistente === 3" key="passo3" class="text-center w-full">
+                                    <h4 class="text-lg font-bold text-gray-700 dark:text-gray-200 mb-4">A que preço queres que passe?</h4>
+                                    <span class="text-sm font-bold text-tema-500 mb-2 block">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+                                    <input type="text" inputmode="decimal" v-model="targetInput" @input="formatarInput('targetInput')" autofocus class="w-full border-2 border-tema-400 dark:border-tema-500 rounded-2xl py-5 px-4 text-center font-black text-4xl outline-none transition-all bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:border-tema-600 focus:shadow-md placeholder-gray-300 dark:placeholder-gray-700" placeholder="0.00">
+                                </div>
+
+
+                                <!-- PASSO 4: Resultado -->
+                                <div v-else-if="passoAssistente === 4" key="passo4" class="text-center w-full">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-500 mb-4">
+                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                                    </div>
+                                    <p class="text-sm font-extrabold uppercase tracking-widest text-gray-400 mb-2">Colocar no POS</p>
+                                    <div class="text-5xl font-extrabold font-mono text-gray-900 dark:text-white tracking-tighter mb-2">
+                                        {{ resultadoFinal }}
+                                    </div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Podes fechar o assistente agora.</p>
+                                </div>
+                            </transition>
+                        </div>
+
+                        <!-- Botões de Navegação -->
+                        <div class="flex gap-3 mt-8 flex-none">
+                            <button v-if="passoAssistente > 1 && passoAssistente < 4" @click="passoAnterior" class="flex-1 py-4 rounded-2xl font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                Voltar
+                            </button>
+                            <button v-if="passoAssistente < 3" @click="proximoPasso" class="flex-[2] py-4 rounded-2xl font-bold text-white bg-tema-600 hover:bg-tema-500 shadow-lg shadow-tema-600/30 transition-all">
+                                Seguinte
+                            </button>
+                            <button v-if="passoAssistente === 3" @click="proximoPasso" class="flex-[2] py-4 rounded-2xl font-bold text-white bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/30 transition-all">
+                                Calcular
+                            </button>
+                            <button v-if="passoAssistente === 4" @click="fecharAssistente" class="w-full py-4 rounded-2xl font-bold text-white bg-tema-600 hover:bg-tema-500 shadow-lg shadow-tema-600/30 transition-all">
+                                Concluir
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </transition>
+
 
                        <!-- Modal Ajuda -->
             <transition name="modal">
@@ -689,6 +791,11 @@
                         }
                     ],
                     tabacosSelecionados: [], // <-- Vírgula corrigida aqui!
+                                        // Propriedades do Assistente
+                    mostrarAssistente: false,
+                    passoAssistente: 1,
+                    mostrarDicaAssistente: false,
+
 
                     // Propriedades de Personalização
                     mostrarOpcoes: false,
@@ -740,14 +847,25 @@
         document.documentElement.classList.remove('dark');
     }
 
-    const corGuardada = localStorage.getItem('fp_cor');
-    if (corGuardada && this.paletasCores[corGuardada]) {
-        this.mudarCor(corGuardada);
-    }
+            const corGuardada = localStorage.getItem('fp_cor');
+        if (corGuardada && this.paletasCores[corGuardada]) {
+            this.mudarCor(corGuardada);
+        }
               // INICIA A VERIFICAÇÃO DE ÉPOCAS AQUI
                 this.verificarEpoca();
+
+                // MOSTRAR A DICA DO ASSISTENTE 1 SEGUNDO DEPOIS DE ABRIR A APP
+                setTimeout(() => {
+                    this.mostrarDicaAssistente = true;
+                    // ESCONDE SOZINHA APÓS 5 SEGUNDOS
+                    setTimeout(() => {
+                        this.mostrarDicaAssistente = false;
+                    }, 5000);
+                }, 1000);
             },
+            
             methods: {
+
                               verificarEpoca() {
                     const dataAtual = new Date();
                     const ano = dataAtual.getFullYear();
@@ -819,6 +937,7 @@ else {
             document.documentElement.classList.remove('dark');
         }
     },
+                
                 mudarCor(nomeCor) {
                     const p = this.paletasCores[nomeCor];
                     if (!p) return;
@@ -853,6 +972,22 @@ else {
 
                 mudarTab(novaTab) { this.tab = novaTab; this.limparTudo(); },
                 limparTudo() { this.baseInput = ''; this.discInput = ''; this.targetInput = ''; },
+                iniciarAssistente() {
+                    this.limparTudo(); // Limpa dados anteriores
+                    this.passoAssistente = 1;
+                    this.mostrarAssistente = true;
+                    this.mostrarDicaAssistente = false; 
+                },
+                proximoPasso() {
+                    if (this.passoAssistente < 4) this.passoAssistente++;
+                },
+                passoAnterior() {
+                    if (this.passoAssistente > 1) this.passoAssistente--;
+                },
+                fecharAssistente() {
+                    this.mostrarAssistente = false;
+                },
+
                 preencherExemplo() {
                     if (this.tab === 'unit') {
                         this.baseInput = '2.50';
@@ -981,6 +1116,7 @@ else {
                     this.calcReiniciarProximo = true;
                 }
             }
+            
           
         }).mount('#app');
         
