@@ -36,7 +36,8 @@
         }
     </script>
  
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Creepster&family=Dancing+Script:wght@700&family=Inter:wght@300;400;500;600;700;800&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
+
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <style>
@@ -107,6 +108,7 @@
             position: absolute; 
             width: calc(100% - 4px); 
         }
+        
     </style>
 </head>
 <body>
@@ -127,9 +129,12 @@
                             Forçar Preço <span v-if="iconApp" class="animate-fade-in text-xl">{{ iconApp }}</span>
                         </h1>
                         <!-- Legenda da Época Festiva -->
-                        <span v-if="nomeEpoca" class="text-[10px] font-bold text-tema-500 dark:text-tema-400 uppercase tracking-widest mt-1.5 animate-fade-in">
-                            {{ nomeEpoca }}
-                        </span>
+                        <span v-if="nomeEpoca" 
+      class="text-tema-500 dark:text-tema-400 mt-0.5 animate-fade-in"
+      :style="{ fontFamily: fonteEpoca || 'inherit' }"
+      :class="fonteEpoca ? 'text-[1.1rem] font-normal normal-case tracking-wide' : 'text-[10px] font-bold uppercase tracking-widest mt-1.5'">
+    {{ nomeEpoca }}
+</span>
                     </div>
                 </div>
                <div class="flex gap-1.5 sm:gap-2">
@@ -177,71 +182,73 @@
             </div>
 
                                     <!-- Card Principal de Inputs -->
-            <div class="p-6 rounded-[32px] shadow-sm border border-gray-200/80 dark:border-gray-800 mb-5 relative overflow-hidden flex-none transition-all bg-white dark:bg-gray-900 font-sans">
-                <div class="relative border-b border-gray-100 dark:border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
-                    <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-                        {{ tab === 'unit' ? 'Modo Unidade' : 'Modo Ao Peso' }}
-                    </span>
-                    <button @click="limparTudo" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-800" title="Limpar tudo">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                    </button>
-                </div>
+<div class="p-6 rounded-[32px] shadow-sm border border-gray-200/80 dark:border-gray-800 mb-5 relative overflow-hidden flex-none bg-white dark:bg-gray-900 font-sans transition-all">
+    <transition name="fade" mode="out-in">
+        <div :key="tab">
+            <div class="relative border-b border-gray-100 dark:border-gray-800 pb-3 mb-5 mt-1 flex justify-between items-center">
+                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                    {{ tab === 'unit' ? 'Modo Unidade' : 'Modo Ao Peso' }}
+                </span>
+                <button @click="limparTudo" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-800" title="Limpar tudo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+            </div>
 
-                <div class="grid grid-cols-2 gap-4 items-start">
-                    <!-- Bloco: Está a passar a -->
-                    <div>
-                        <div class="flex items-center justify-center gap-1.5 mb-2.5">
-                            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 leading-tight">
-                                Passa a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
-                            </label>
-                            <button @click="dicaAtiva = dicaAtiva === 'base' ? null : 'base'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
-                        </div>
-                        <input type="text" inputmode="decimal" v-model="baseInput" @input="formatarInput('baseInput')" @focus="dicaAtiva = 'base'" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
-                        <!-- Dica -->
-                        <div v-if="dicaAtiva === 'base'" class="mt-2 text-[11px] text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-2.5 rounded-xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
-                            Preço errado que o artigo está a assumir na caixa.
-                        </div>
-                    </div>
-
-                    <!-- Bloco: Desconto Direto -->
-                    <div>
-                        <div class="flex items-center justify-center gap-1.5 mb-2.5">
-                            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 leading-tight">
-                                Desconto <span class="text-tema-500 dark:text-tema-400">(€)</span>
-                            </label>
-                            <button @click="dicaAtiva = dicaAtiva === 'disc' ? null : 'disc'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
-                        </div>
-                        <input type="text" inputmode="decimal" v-model="discInput" @input="formatarInput('discInput')" @focus="dicaAtiva = 'disc'" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
-                        <!-- Dica -->
-                        <div v-if="dicaAtiva === 'disc'" class="mt-2 text-[11px] text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-2.5 rounded-xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
-                            Valor em € do desconto direto que aparece no POS.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bloco: Preço Final Desejado -->
-                <div class="mt-5 pt-5 border-t border-gray-100 dark:border-gray-800">
-                    <div class="flex items-center justify-center gap-1.5 mb-3">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                            Quero que passe a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+            <div class="grid grid-cols-2 gap-4 items-start">
+                <!-- Bloco: Está a passar a -->
+                <div>
+                    <div class="flex items-center justify-center gap-1.5 mb-2.5">
+                        <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 leading-tight">
+                            Passa a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
                         </label>
-                        <button @click="dicaAtiva = dicaAtiva === 'target' ? null : 'target'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
+                        <button @click="dicaAtiva = dicaAtiva === 'base' ? null : 'base'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
                     </div>
-                    <input type="text" inputmode="decimal" v-model="targetInput" @input="formatarInput('targetInput')" @focus="dicaAtiva = 'target'" class="w-full border-2 border-transparent rounded-[28px] py-5 px-4 text-center font-black text-4xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-md placeholder-gray-300 dark:placeholder-gray-700" placeholder="0.00">
-                    <!-- Dica -->
-                    <div v-if="dicaAtiva === 'target'" class="mt-3 text-[11px] sm:text-xs text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-3 rounded-2xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
-                        O preço correto pelo qual o cliente deve levar o artigo.
+                    <input type="text" inputmode="decimal" v-model="baseInput" @input="formatarInput('baseInput')" @focus="dicaAtiva = 'base'" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
+                    <div v-if="dicaAtiva === 'base'" class="mt-2 text-[11px] text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-2.5 rounded-xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
+                        Preço errado que o artigo está a assumir na caixa.
                     </div>
                 </div>
-                
-                <!-- Botão de Exemplo Prático (Só aparece quando tudo está vazio) -->
-                <div v-if="!baseInput && !discInput && !targetInput" class="mt-4 text-center animate-fade-in">
-                    <button @click="preencherExemplo" class="text-[11px] font-bold text-tema-500 hover:text-tema-600 bg-tema-50 hover:bg-tema-100 dark:bg-tema-500/10 dark:hover:bg-tema-500/20 px-4 py-2 rounded-full transition-colors flex items-center justify-center gap-1.5 mx-auto">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                        Tentar com um exemplo prático
-                    </button>
+
+                <!-- Bloco: Desconto Direto -->
+                <div>
+                    <div class="flex items-center justify-center gap-1.5 mb-2.5">
+                        <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 leading-tight">
+                            Desconto <span class="text-tema-500 dark:text-tema-400">(€)</span>
+                        </label>
+                        <button @click="dicaAtiva = dicaAtiva === 'disc' ? null : 'disc'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
+                    </div>
+                    <input type="text" inputmode="decimal" v-model="discInput" @input="formatarInput('discInput')" @focus="dicaAtiva = 'disc'" class="w-full border-2 border-transparent rounded-[24px] py-4 px-2 text-center font-extrabold text-2xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-sm placeholder-gray-400 dark:placeholder-gray-600" placeholder="0.00">
+                    <div v-if="dicaAtiva === 'disc'" class="mt-2 text-[11px] text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-2.5 rounded-xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
+                        Valor em € do desconto direto que aparece no POS.
+                    </div>
                 </div>
             </div>
+
+            <!-- Bloco: Preço Final Desejado -->
+            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-gray-800">
+                <div class="flex items-center justify-center gap-1.5 mb-3">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        Quero que passe a <span class="text-tema-500 dark:text-tema-400">{{ tab === 'weight' ? '(€/Kg)' : '(€)' }}</span>
+                    </label>
+                    <button @click="dicaAtiva = dicaAtiva === 'target' ? null : 'target'" class="text-gray-400 hover:text-tema-500 bg-gray-100 dark:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-black transition-colors">?</button>
+                </div>
+                <input type="text" inputmode="decimal" v-model="targetInput" @input="formatarInput('targetInput')" @focus="dicaAtiva = 'target'" class="w-full border-2 border-transparent rounded-[28px] py-5 px-4 text-center font-black text-4xl outline-none transition-all bg-gray-100/80 dark:bg-gray-800/80 text-gray-900 dark:text-white focus:border-tema-500 focus:bg-white dark:focus:bg-gray-900 focus:shadow-md placeholder-gray-300 dark:placeholder-gray-700" placeholder="0.00">
+                <div v-if="dicaAtiva === 'target'" class="mt-3 text-[11px] sm:text-xs text-tema-700 dark:text-tema-300 bg-tema-50 dark:bg-tema-500/10 p-3 rounded-2xl text-center font-medium animate-fade-in border border-tema-100 dark:border-tema-500/20">
+                    O preço correto pelo qual o cliente deve levar o artigo.
+                </div>
+            </div>
+        </div>
+    </transition>
+    
+    <!-- Botão de Exemplo Prático (Mantém-se debaixo da transição para não saltar) -->
+    <div v-if="!baseInput && !discInput && !targetInput" class="mt-4 text-center animate-fade-in">
+        <button @click="preencherExemplo" class="text-[11px] font-bold text-tema-500 hover:text-tema-600 bg-tema-50 hover:bg-tema-100 dark:bg-tema-500/10 dark:hover:bg-tema-500/20 px-4 py-2 rounded-full transition-colors flex items-center justify-center gap-1.5 mx-auto">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            Tentar com um exemplo prático
+        </button>
+    </div>
+</div>
+
 
             <!-- Card de Resultado Final -->
             <div class="bg-white dark:bg-gray-900 rounded-[32px] shadow-sm border border-gray-200/85 dark:border-gray-800 p-6 flex flex-col justify-center mb-6 flex-none backdrop-blur-sm transition-colors">
@@ -304,16 +311,16 @@
                 </div>
             </transition>
 
-            <!-- Modal Calculadora -->
+                                    <!-- Modal Calculadora -->
             <transition name="modal">
                 <div v-if="mostrarCalculadora" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-                    <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="mostrarCalculadora = false"></div>
+                    <div class="absolute inset-0 bg-black/55 backdrop-blur-md" @click="fecharCalculadora"></div>
                     <div class="modal-content relative bg-white dark:bg-gray-950 w-full max-w-sm rounded-t-[36px] sm:rounded-[32px] p-5 pb-8 sm:p-6 shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col max-h-[95dvh] overflow-y-auto scrollbar-hide">
                     
                         <!-- Cabeçalho Calculadora -->
                         <div class="flex justify-between items-center mb-4 px-1 flex-none">
                             <h3 class="text-lg font-extrabold text-gray-900 dark:text-white">Calculadora</h3>
-                            <button @click="mostrarCalculadora = false" class="p-2 bg-gray-100 dark:bg-gray-900 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors">
+                            <button @click="fecharCalculadora" class="p-2 bg-gray-100 dark:bg-gray-900 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             </button>
                         </div>
@@ -328,77 +335,96 @@
                             </div>
                         </div>
 
-                        <!-- Histórico Calculadora -->
-                        <div class="flex flex-col border-b border-gray-100 dark:border-gray-900 pb-3 mb-3 transition-all duration-300 ease-in-out"
-                             :class="mostrarHistorico ? 'flex-1 min-h-[130px] overflow-hidden' : 'flex-none'">
+                        <!-- Barra de Acesso ao Histórico -->
+                        <div class="flex justify-between items-center mb-1 px-4 py-3 cursor-pointer bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-800/80 rounded-2xl select-none transition-all duration-300 border border-gray-100 dark:border-gray-800/60" 
+                             @click="mostrarHistorico = !mostrarHistorico">
                             
-                            <div class="flex justify-between items-center mb-1 px-3 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl select-none transition-colors" 
-                                 @click="mostrarHistorico = !mostrarHistorico">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-tema-500 dark:text-tema-400 text-xs transition-transform duration-500" 
+                                      :class="{'rotate-180': mostrarHistorico}">▼</span>
                                 
-                                <div class="flex items-center gap-2">
-                                    <span class="text-tema-500 dark:text-tema-400 text-xs transition-transform duration-300" 
-                                          :class="{'rotate-180': mostrarHistorico}">▼</span>
-                                    
-                                    <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                        {{ mostrarHistorico ? 'Ocultar Histórico' : 'Ver Histórico' }}
-                                    </span>
-                                    
-                                    <span v-if="calcHistorico.length > 0" class="bg-tema-100 dark:bg-tema-900/30 text-tema-600 dark:text-tema-400 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">
-                                        {{ calcHistorico.length }}
-                                    </span>
-                                </div>
+                                <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    {{ mostrarHistorico ? 'Ocultar Histórico' : 'Ver Histórico' }}
+                                </span>
+                                
+                                <span v-if="calcHistorico.length > 0" class="bg-tema-100 dark:bg-tema-900/30 text-tema-600 dark:text-tema-400 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold transition-all">
+                                    {{ calcHistorico.length }}
+                                </span>
+                            </div>
 
+                            <transition name="fade">
                                 <button v-if="mostrarHistorico && calcHistorico.length > 0" 
                                         @click.stop="calcLimparHistorico" 
-                                        class="text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-1 bg-gray-50 dark:bg-gray-900 px-2.5 py-1 rounded-xl border border-gray-200 dark:border-gray-800 transition-colors">
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                        class="text-[11px] font-bold text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-1 px-2.5 py-1.5 rounded-xl transition-colors">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                     Limpar
                                 </button>
-                            </div>
-                            
-                            <div v-if="mostrarHistorico" class="overflow-y-auto pr-1 space-y-2 flex-1 scrollbar-hide animate-fade-in p-1">
-                                <div v-if="calcHistorico.length === 0" class="text-center text-gray-400 dark:text-gray-600 text-xs py-3 italic">
-                                    O histórico está vazio.
-                                </div>
-                                <div v-for="(item, index) in calcHistorico" :key="index" class="bg-gray-50 dark:bg-gray-900/60 rounded-2xl p-3 border border-gray-100 dark:border-gray-900 flex justify-between items-center hover:border-tema-200 dark:hover:border-tema-800 transition-colors">
-                                    <span class="text-gray-500 dark:text-gray-400 text-sm font-mono">{{ item.conta }} =</span>
-                                    <span class="text-gray-900 dark:text-white font-bold font-mono text-base">{{ item.resultado }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Teclado Calculadora -->
-                        <div class="grid grid-cols-4 gap-2 flex-none" :class="{'hidden': mostrarHistorico}">
-                            <button @click="calcLimpar" class="col-span-2 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-500 dark:text-red-400 font-extrabold py-3 rounded-2xl text-lg transition-colors border border-red-100 dark:border-transparent">AC</button>
-                            <button @click="calcPercentagem" class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-extrabold py-3 rounded-2xl text-lg transition-colors">%</button>
-                            <button @click="calcOperacao('/')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">÷</button>
-                            
-                            <button @click="calcNumero('7')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">7</button>
-                            <button @click="calcNumero('8')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">8</button>
-                            <button @click="calcNumero('9')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">9</button>
-                            <button @click="calcOperacao('*')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">×</button>
-                            
-                            <button @click="calcNumero('4')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">4</button>
-                            <button @click="calcNumero('5')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">5</button>
-                            <button @click="calcNumero('6')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">6</button>
-                            <button @click="calcOperacao('-')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">−</button>
-                            
-                            <button @click="calcNumero('1')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">1</button>
-                            <button @click="calcNumero('2')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">2</button>
-                            <button @click="calcNumero('3')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">3</button>
-                            <button @click="calcOperacao('+')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">+</button>
-                            
-                            <button @click="calcNumero('0')" class="col-span-2 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">0</button>
-                            <button @click="calcPonto" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">.</button>
-                            <button @click="calcResultado" class="bg-tema-600 hover:bg-tema-500 text-white font-extrabold py-3 rounded-2xl shadow-lg shadow-tema-600/30 text-xl transition-all">=</button>
+                            </transition>
                         </div>
                         
-                        <button @click="mostrarCalculadora = false" class="w-full mt-3 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-white py-3 rounded-2xl font-bold text-sm transition-all border border-gray-200 dark:border-gray-800">
+                        <!-- O Segredo da Animação Fluida: Transição com Grid (Efeito Acordeão) -->
+                        <div class="relative w-full flex-col">
+                            
+                            <!-- Área do Histórico (Expande/Encolhe) -->
+                            <div class="grid transition-all duration-500 ease-in-out"
+                                 :style="{ gridTemplateRows: mostrarHistorico ? '1fr' : '0fr', opacity: mostrarHistorico ? '1' : '0' }">
+                                <div class="overflow-hidden flex flex-col">
+                                    <div class="overflow-y-auto pr-1 scrollbar-hide pb-2 max-h-[260px] space-y-2 mt-2">
+                                        <div v-if="calcHistorico.length === 0" class="text-center text-gray-400 dark:text-gray-600 text-xs py-8 italic w-full">
+                                            O histórico está vazio.
+                                        </div>
+                                        <transition-group v-else name="lista" tag="div" class="space-y-2 relative w-full">
+                                            <div v-for="(item, index) in calcHistorico" :key="'calc-hist-' + index" class="bg-white dark:bg-gray-900/60 rounded-2xl p-3.5 border border-gray-100 dark:border-gray-800 flex justify-between items-center hover:border-tema-200 dark:hover:border-tema-800 transition-colors shadow-sm">
+                                                <span class="text-gray-500 dark:text-gray-400 text-sm font-mono">{{ item.conta }} =</span>
+                                                <span class="text-gray-900 dark:text-white font-bold font-mono text-base">{{ item.resultado }}</span>
+                                            </div>
+                                        </transition-group>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Área do Teclado (Expande/Encolhe oposto ao Histórico) -->
+                            <div class="grid transition-all duration-500 ease-in-out"
+                                 :style="{ gridTemplateRows: !mostrarHistorico ? '1fr' : '0fr', opacity: !mostrarHistorico ? '1' : '0' }">
+                                <div class="overflow-hidden">
+                                    <div class="grid grid-cols-4 gap-2 pt-2">
+                                        <button @click="calcLimpar" class="col-span-2 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-500 dark:text-red-400 font-extrabold py-3 rounded-2xl text-lg transition-colors border border-red-100 dark:border-transparent">AC</button>
+                                        <button @click="calcPercentagem" class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-extrabold py-3 rounded-2xl text-lg transition-colors">%</button>
+                                        <button @click="calcOperacao('/')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">÷</button>
+                                        
+                                        <button @click="calcNumero('7')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">7</button>
+                                        <button @click="calcNumero('8')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">8</button>
+                                        <button @click="calcNumero('9')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">9</button>
+                                        <button @click="calcOperacao('*')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">×</button>
+                                        
+                                        <button @click="calcNumero('4')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">4</button>
+                                        <button @click="calcNumero('5')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">5</button>
+                                        <button @click="calcNumero('6')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">6</button>
+                                        <button @click="calcOperacao('-')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">−</button>
+                                        
+                                        <button @click="calcNumero('1')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">1</button>
+                                        <button @click="calcNumero('2')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">2</button>
+                                        <button @click="calcNumero('3')" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">3</button>
+                                        <button @click="calcOperacao('+')" class="bg-tema-100 dark:bg-tema-500/20 hover:bg-tema-200 dark:hover:bg-tema-500/30 text-tema-600 dark:text-tema-400 font-extrabold py-3 rounded-2xl text-xl transition-colors border border-tema-200 dark:border-transparent">+</button>
+                                        
+                                        <button @click="calcNumero('0')" class="col-span-2 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">0</button>
+                                        <button @click="calcPonto" class="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-800 dark:text-white font-extrabold py-3 rounded-2xl text-xl transition-colors border border-gray-100 dark:border-gray-800 shadow-sm">.</button>
+                                        <button @click="calcResultado" class="bg-tema-600 hover:bg-tema-500 text-white font-extrabold py-3 rounded-2xl shadow-lg shadow-tema-600/30 text-xl transition-all">=</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- Fecho da área do Efeito Acordeão -->
+                        
+                        <!-- BOTÃO DE FECHAR (Agora sim, colocado no sítio certo!) -->
+                        <button @click="fecharCalculadora" class="w-full mt-4 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-white py-3.5 rounded-2xl font-bold text-sm transition-all border border-gray-200 dark:border-gray-800 shadow-sm">
                             Fechar Calculadora
                         </button>
-                    </div>
-                </div>
+
+                    </div> <!-- Fecho do modal-content -->
+                </div> <!-- Fecho do fixed inset -->
             </transition>
+
+
 
             <!-- Modal Tabaco -->
             <transition name="modal">
@@ -595,6 +621,8 @@
                     logoApp: 'FP', 
                     iconApp: '',   
                     nomeEpoca: '',
+                    fonteEpoca: '', 
+
 
                     dicaAtiva: null, // Controla qual tooltip está aberta
                     dicaTabaco: false, // Controla a dica do modal tabaco
@@ -742,36 +770,42 @@
                     const dataInicioPascoa = new Date(dataPascoa);
                     dataInicioPascoa.setDate(dataPascoa.getDate() - 7);
 
-                    // 1. VERIFICA SE É HALLOWEEN (20 a 31 de Outubro)
-                    if (mes === 10 && dia >= 20) {
-                        this.logoApp = '🎃';
-                        this.iconApp = '👻';
-                        this.nomeEpoca = 'Especial Halloween';
-                    }
-                    // 2. VERIFICA SE É NATAL (1 a 26 de Dezembro)
-                    else if (mes === 12 && dia <= 26) {
-                        this.logoApp = '🎄';
-                        this.iconApp = '🎅';
-                        this.nomeEpoca = 'Edição de Natal';
-                    } 
-                    // 3. VERIFICA SE É ANO NOVO (27 de Dez. a 6 de Janeiro)
-                    else if ((mes === 12 && dia >= 27) || (mes === 1 && dia <= 6)) {
-                        this.logoApp = '🎆';
-                        this.iconApp = '🥂';
-                        this.nomeEpoca = 'Feliz Ano Novo';
-                    }
-                    // 4. VERIFICA SE É PÁSCOA (Na semana da Páscoa do ano atual)
-                    else if (dataAtual >= dataInicioPascoa && dataAtual <= dataPascoa) {
-                        this.logoApp = '🐰';
-                        this.iconApp = '🍫';
-                        this.nomeEpoca = 'Boa Páscoa';
-                    }
-                    // SE NÃO FOR NADA, FICA NORMAL
-                    else {
-                        this.logoApp = 'FP';
-                        this.iconApp = '';
-                        this.nomeEpoca = '';
-                    }
+                    // 1. VERIFICA SE É HALLOWEEN
+if (mes === 10 && dia >= 20) {
+    this.logoApp = '🎃';
+    this.iconApp = '👻';
+    this.nomeEpoca = 'Especial Halloween';
+    this.fonteEpoca = "'Creepster', cursive";
+}
+// 2. VERIFICA SE É NATAL
+else if (mes === 12 && dia <= 26) {
+    this.logoApp = '🎄';
+    this.iconApp = '🎅';
+    this.nomeEpoca = 'Edição de Natal';
+    this.fonteEpoca = "'Mountains of Christmas', cursive";
+} 
+// 3. VERIFICA SE É ANO NOVO
+else if ((mes === 12 && dia >= 27) || (mes === 1 && dia <= 6)) {
+    this.logoApp = '🎆';
+    this.iconApp = '🥂';
+    this.nomeEpoca = 'Feliz Ano Novo';
+    this.fonteEpoca = "'Dancing Script', cursive";
+}
+// 4. VERIFICA SE É PÁSCOA
+else if (dataAtual >= dataInicioPascoa && dataAtual <= dataPascoa) {
+    this.logoApp = '🐰';
+    this.iconApp = '🍫';
+    this.nomeEpoca = 'Boa Páscoa';
+    this.fonteEpoca = "'Chewy', cursive";
+}
+// SE NÃO FOR NADA, FICA NORMAL
+else {
+    this.logoApp = 'FP';
+    this.iconApp = '';
+    this.nomeEpoca = '';
+    this.fonteEpoca = '';
+}
+
                 },
 
               alternarModoEscuro() {
@@ -837,6 +871,18 @@
                      if (navigator.share) { try { await navigator.share(data); } catch (err) {} }
                      else { alert("Link copiado!"); }
                 },
+              
+                                fecharCalculadora() {
+                    // Fecha o modal imediatamente
+                    this.mostrarCalculadora = false;
+                    
+                    // Aguarda a animação do modal terminar (400ms) e fecha o histórico
+                    // Isto evita saltos bruscos visuais enquanto o modal está a desvanecer
+                    setTimeout(() => {
+                        this.mostrarHistorico = false;
+                    }, 400);
+                },
+
 
                 calcNumero(n) {
                     if (this.calcDisplay === '0' || this.calcReiniciarProximo) {
@@ -935,7 +981,9 @@
                     this.calcReiniciarProximo = true;
                 }
             }
+          
         }).mount('#app');
+        
     </script>
 </body>
 </html>
